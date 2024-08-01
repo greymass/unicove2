@@ -37,7 +37,7 @@
 	/* Layout */
 
 	.card {
-		@apply rounded-xl grid gap-4 p-5 bg-shark-900/20;
+		@apply rounded-xl grid gap-4 px-7 py-5 bg-shark-900/20;
 	}
 
 	.layout-stack {
@@ -52,7 +52,7 @@
 		@apply flex flex-wrap gap-4;
 	}
 
-	.layout-switcher > * {
+	.layout-switcher>* {
 		flex-grow: 1;
 		flex-basis: calc((var(--switcher-threshold) - 100%) * 999);
 	}
