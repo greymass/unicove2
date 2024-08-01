@@ -1,27 +1,17 @@
 <script lang="ts">
-	import { createRadioGroup, melt } from '@melt-ui/svelte';
 	import Button from '$lib/components/button/button.svelte';
 
 	interface Props {
-		options: string[];
+		options: { href: string; text: string; active: boolean }[];
+		class?: string;
 	}
-	const props: Props = $props();
-
-	const {
-		elements: { root, item, hiddenInput },
-		helpers: { isChecked }
-	} = createRadioGroup({
-		defaultValue: props.options[0],
-		orientation: 'horizontal'
-	});
+	const { class: className, ...props }: Props = $props();
 </script>
 
-<div use:melt={$root} aria-label="page functions" class="flex flex-wrap gap-3">
+<menu aria-label="page functions" class={`flex flex-wrap gap-3 sm:self-end ${className}`}>
 	{#each props.options as option}
-		<span class="contents" use:melt={$item(option)}>
-			<Button variant="pill" active={$isChecked(option)}>
-				{option}
-			</Button>
-		</span>
+		<Button href={option.href} variant="pill" active={option.active}>
+			{option.text}
+		</Button>
 	{/each}
-</div>
+</menu>

@@ -6,6 +6,6 @@
 	// remaining props will be passed to the root element
 </script>
 
-<svelte:element this={tag} class={`cluster flex flex-wrap gap-4 ${className}`} {...props}>
+<svelte:element this={tag} class={`layout-cluster ${className}`} {...props}>
 	{@render props.children()}
 </svelte:element>

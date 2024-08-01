@@ -1,8 +1,8 @@
 <script lang="ts">
 	let { children } = $props();
-	import { Box } from '$lib/components/layout';
+	import { PageMargin } from '$lib/components/layout';
 </script>
 
-<Box>
+<PageMargin>
 	{@render children()}
-</Box>
+</PageMargin>

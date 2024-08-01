@@ -4,17 +4,6 @@
 	const { class: className = '', children, threshold = '30rem', ...props } = $props();
 </script>
 
-<div
-	class={`switcher flex flex-wrap gap-4 ${className}`}
-	{...props}
-	style={`--threshold:${threshold}`}
->
+<div class={`layout-switcher ${className}`} {...props} style={`--switcher-threshold:${threshold}`}>
 	{@render children()}
 </div>
-
-<style>
-	.switcher :global(> *) {
-		flex-grow: 1;
-		flex-basis: calc((var(--threshold) - 100%) * 999);
-	}
-</style>

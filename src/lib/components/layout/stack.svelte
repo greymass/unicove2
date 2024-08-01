@@ -6,6 +6,6 @@
 	// remaining props will be passed to the root element
 </script>
 
-<div class={`stack ${className}`} {...props}>
+<div class={`layout-stack ${className}`} {...props}>
 	{@render props.children()}
 </div>

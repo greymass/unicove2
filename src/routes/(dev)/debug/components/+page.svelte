@@ -4,11 +4,20 @@
 	import Button from '$lib/components/button/button.svelte';
 	import TextInput from '$lib/components/input/textinput.svelte';
 	import Label from '$lib/components/input/label.svelte';
-	import Card from '$lib/components/card.svelte';
-	import { Grid, Switcher, Sidebar, Cluster, Center, Box, Stack } from '$lib/components/layout';
+	import {
+		Grid,
+		Switcher,
+		Sidebar,
+		Cluster,
+		Center,
+		Box,
+		Card,
+		Stack
+	} from '$lib/components/layout';
 	import PillGroup from '$lib/components/navigation/pillgroup.svelte';
 	import AccountNavigation from '$lib/components/navigation/accountnavigation.svelte';
 	import Code from '$lib/components/code.svelte';
+	import BarChart from '$lib/components/chart/barchart.svelte';
 
 	let input: AssetInput;
 
@@ -213,6 +222,15 @@
 			</Stack>
 
 			<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+			
+			<Stack id="charts">
+				<h2 class="h2">Charts</h2>
+				<h3 class="h3">Bar Chart</h3>
+				<BarChart title="Staking Yield History" />
+			</Stack>
+
+			<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+
 
 			<Stack id="layout" class="space-y-8">
 				<div>

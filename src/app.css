@@ -5,6 +5,7 @@
 @layer components {
 	/* Headings are defined by class instead of tag to preserve semantic html independent of style */
 
+	/* Typography */
 	.h1 {
 		@apply text-5xl font-semibold;
 	}
@@ -33,15 +34,39 @@
 		@apply max-w-prose text-base font-medium;
 	}
 
+	/* Layout */
+
 	.card {
-		@apply bg-mineShaft-900;
+		@apply rounded-xl grid gap-4 p-5 bg-shark-900/20;
 	}
 
-	.stack {
+	.layout-stack {
 		@apply flex flex-col gap-4;
 	}
 
-	.center {
+	.layout-center {
 		@apply box-content max-w-prose mx-auto;
+	}
+
+	.layout-switcher {
+		@apply flex flex-wrap gap-4;
+	}
+
+	.layout-switcher > * {
+		flex-grow: 1;
+		flex-basis: calc((var(--switcher-threshold) - 100%) * 999);
+	}
+
+	.layout-grid {
+		@apply grid gap-4;
+		grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-itemWidth), 100%), 1fr));
+	}
+
+	.layout-cluster {
+		@apply flex flex-wrap gap-4;
+	}
+
+	.px-page {
+		@apply px-4 sm:px-11;
 	}
 }

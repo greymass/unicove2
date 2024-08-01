@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { children } = $props();
-	import { Box } from '$lib/components/layout';
+	import { PageMargin } from '$lib/components/layout';
 	import AccountNavigation from '$lib/components/navigation/accountnavigation.svelte';
 	import { page } from '$app/stores';
 
@@ -15,17 +15,19 @@
 		{ href: '/transactions', text: 'Transactions' }
 	];
 
+	let rootPathname = $derived($page.url.pathname.split('/').slice(2)[0]);
+
 	// Derive the active state of each destination
 	let options = $derived(
 		destinations.map((destination) => ({
 			...destination,
-			active: $page.url.pathname.includes(destination.href)
+			active: destination.href.includes(rootPathname)
 		}))
 	);
 </script>
 
 <AccountNavigation {options} />
 
-<Box>
+<PageMargin>
 	{@render children()}
-</Box>
+</PageMargin>

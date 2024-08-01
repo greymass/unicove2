@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Cluster, Box, Sidebar, Switcher } from '$lib/components/layout';
+	import { Cluster, PageMargin, Sidebar, Switcher } from '$lib/components/layout';
 </script>
 
-<Box>
+<PageMargin>
 	<Switcher>
 		<a href="/">Home</a>
 
@@ -16,4 +16,4 @@
 			<a href="/msig/evilmikehere/t">msig</a>
 		</Cluster>
 	</Switcher>
-</Box>
+</PageMargin>
