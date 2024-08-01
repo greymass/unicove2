@@ -17,6 +17,7 @@
 	import PillGroup from '$lib/components/navigation/pillgroup.svelte';
 	import AccountNavigation from '$lib/components/navigation/accountnavigation.svelte';
 	import Code from '$lib/components/code.svelte';
+	import BarChart from '$lib/components/chart/barchart.svelte';
 
 	let input: AssetInput;
 
@@ -221,6 +222,15 @@
 			</Stack>
 
 			<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+			
+			<Stack id="charts">
+				<h2 class="h2">Charts</h2>
+				<h3 class="h3">Bar Chart</h3>
+				<BarChart title="Staking Yield History" />
+			</Stack>
+
+			<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+
 
 			<Stack id="layout" class="space-y-8">
 				<div>
