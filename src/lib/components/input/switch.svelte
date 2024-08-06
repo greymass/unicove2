@@ -36,56 +36,47 @@
 		use:melt={$root}
 		class="
 		relative
-		ring
-		ring-offset-1
-		ring-gray-700
-		ring-offset-transparent
-		h-4/5
-		cursor-default
+		h-5
 		rounded-full
+		border
+		border-mineShaft-700
 		bg-transparent
-		transition-colors
-		disabled:bg-gray-700
-		disabled:ring-offset-gray-700
-		data-[state=checked]:bg-sky-500
-		data-[state=checked]:ring-offset-sky-500
-		data-[state=checked]:ring-sky-500
-		data-[state=checked]:hover:bg-sky-400
-		data-[state=checked]:hover:ring-sky-400
-		data-[state=checked]:hover:ring-offset-sky-400
+		focus-visible:border-solar-500
 		focus-visible:outline
 		focus-visible:outline-2
-		focus-visible:outline-offset-2
+		focus-visible:outline-offset-[-2px]
 		focus-visible:outline-solar-500
-		focus-visible:ring-solar-500
-		focus-visible:ring-offset-solar-500
-		data-[state=checked]:focus-visible:ring-solar-500
-		data-[state=checked]:focus-visible:ring-offset-solar-500
+		disabled:bg-mineShaft-700
+		data-[state=checked]:border-skyBlue-500
+		data-[state=checked]:bg-skyBlue-500
+		data-[state=checked]:hover:border-skyBlue-400
+		data-[state=checked]:hover:bg-skyBlue-400
 "
 		{id}
 		aria-labelledby={ariaLabelledBy}
 	>
-		<span class="block rounded-full bg-neutral-400 transition thumb"></span>
+		<span class="thumb block rounded-full bg-neutral-400 transition"></span>
 	</button>
 	<input use:melt={$input} {name} />
 </div>
 
 <style>
 	button {
-		--w: 2.25rem;
-		--padding: 0.001rem;
+		/* Width of the track */
+		--w: 36px;
 		width: var(--w);
 	}
 
 	.thumb {
-		--size: 1rem;
+		/* Size of the thumb */
+		--size: 16px;
 		width: var(--size);
 		height: var(--size);
-		transform: translateX(var(--padding));
+		transform: translateX(1px);
 	}
 
 	:global([data-state='checked']) .thumb {
-		transform: translateX(calc(var(--w) - var(--size) - var(--padding)));
+		transform: translateX(calc(var(--w) - (var(--size) + 3px)));
 		background-color: white;
 	}
 
