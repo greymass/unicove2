@@ -3,6 +3,7 @@
 	import TextInput from '$lib/components/input/textinput.svelte';
 	import Label from '$lib/components/input/label.svelte';
 	import Switch from '$lib/components/input/switch.svelte';
+	import Checkbox from '$lib/components/input/checkbox.svelte';
 
 	import { Asset } from '@wharfkit/antelope';
 	import AssetInput from '$lib/components/input/asset.svelte';
@@ -16,10 +17,12 @@
 	let max = $state(100);
 
 	let controlledSwitch = $state(false);
+	let controlledBox = $state(false);
 
 	$effect(() => {
 		let id = setInterval(() => {
 			controlledSwitch = !controlledSwitch;
+			controlledBox = !controlledBox;
 		}, 1000);
 		return () => clearInterval(id);
 	});
@@ -57,6 +60,17 @@
 			<Switch id="mySwitch-3" name="mySwitch-3" bind:isChecked={controlledSwitch} />
 
 			<p>Switch is {controlledSwitch ? 'on' : 'off'}</p>
+		</div>
+		<div class="mt-5">
+			<h2 class="h2">Checkbox</h2>
+			<Label for="myCheckbox-1">Default:</Label>
+			<Checkbox id="myCheckbox-1" name="myCheckbox-1" />
+			<Label for="myCheckbox-2">Disabled:</Label>
+			<Checkbox id="myCheckbox-2" name="myCheckbox-2" isDisabled={true} />
+			<Label for="myCheckbox-3">Checked:</Label>
+			<Checkbox id="myCheckbox-3" name="myCheckbox-3" bind:isChecked={controlledSwitch} />
+
+			<p>Checkbox is {controlledSwitch ? 'checked' : 'empty'}</p>
 		</div>
 	</form>
 </Stack>
