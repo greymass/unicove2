@@ -2,8 +2,8 @@
 	import { createSwitch, melt, createSync } from '@melt-ui/svelte';
 
 	interface Props {
-		isDisabled?: boolean;
-		isChecked?: boolean;
+		isDisabled: boolean;
+		isChecked: boolean;
 		name: string;
 		id: string;
 	}
@@ -12,7 +12,7 @@
 		isDisabled = false,
 		isChecked = $bindable(false),
 		name,
-		id = 'default-switch-id'
+		id
 	}: Props = $props();
 
 	const {
