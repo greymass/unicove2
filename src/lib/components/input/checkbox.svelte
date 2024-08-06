@@ -62,7 +62,7 @@
 		aria-labelledby={ariaLabelledBy}
 	>
 		{#if isChecked}
-			<Check class="size-5" />
+			<Check />
 		{/if}
 		<input use:melt={$input} />
 	</button>
