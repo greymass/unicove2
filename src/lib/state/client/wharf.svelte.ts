@@ -5,6 +5,9 @@ import {
 	type LoginOptions,
 	type RestoreArgs,
 	type SerializedSession,
+	type TransactArgs,
+	type TransactOptions,
+	type TransactResult,
 	type WalletPlugin,
 	ChainDefinition,
 	Chains,
@@ -15,6 +18,15 @@ import WebRenderer from '@wharfkit/web-renderer';
 import { WalletPluginAnchor } from '@wharfkit/wallet-plugin-anchor';
 import { WalletPluginPrivateKey } from '@wharfkit/wallet-plugin-privatekey';
 import { getContext, setContext } from 'svelte';
+import { TransactPluginStatusEmitter } from '$lib/wharf/plugins/status';
+import {
+	type QueuedTransaction,
+	StatusType,
+	queueTransaction,
+	sendErrorToast,
+	sendSuccessToast
+} from '$lib/wharf/transact.svelte';
+import { getNetwork } from '../network.svelte';
 
 const walletPlugins: WalletPlugin[] = [new WalletPluginAnchor()];
 
@@ -87,10 +99,58 @@ export class WharfState {
 		}
 		return session;
 	}
+
+	async transact(
+		args: TransactArgs,
+		options?: TransactOptions
+	): Promise<TransactResult | undefined> {
+		if (!this.session) {
+			throw new Error('No active session available to transact with.');
+		}
+
+		const transaction: QueuedTransaction = {
+			status: StatusType.CREATED,
+			args,
+			options
+		};
+
+		const result = await this.session
+			.transact(args, {
+				...options,
+				transactPlugins: [new TransactPluginStatusEmitter()]
+			})
+			.catch((e: Error) => {
+				transaction.status = StatusType.ERROR;
+				transaction.error = String(e);
+				queueTransaction(transaction);
+				const { id } = sendErrorToast(transaction);
+				transaction.toastId = id;
+				throw e;
+			});
+
+		if (!result.resolved || !result.response) {
+			transaction.status = StatusType.ERROR;
+			transaction.error = 'Transaction was not resolved.';
+			const { id } = sendErrorToast(transaction);
+			transaction.toastId = id;
+
+			queueTransaction(transaction);
+			throw new Error('Transaction was not resolved.');
+		}
+
+		transaction.status = StatusType.BROADCAST;
+		transaction.response = result.response;
+		transaction.transaction = result.resolved.transaction;
+		const { id } = sendSuccessToast(transaction);
+		transaction.toastId = id;
+		queueTransaction(transaction);
+
+		return result;
+	}
 }
 
-const contextKey = 'wharf';
 export function getWharf(): WharfState {
+	const contextKey = 'wharf';
 	if (!getContext(contextKey)) {
 		setContext(contextKey, new WharfState());
 	}

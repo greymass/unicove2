@@ -15,3 +15,8 @@ format: node_modules
 
 node_modules:
 	bun install --yarn
+
+codegen:
+	npx @wharfkit/cli generate -u https://eos.greymass.com -f src/lib/wharf/contracts/system.ts eosio
+	npx @wharfkit/cli generate -u https://eos.greymass.com -f src/lib/wharf/contracts/token.ts eosio.token
+	npx @wharfkit/cli generate -u https://eos.greymass.com -f src/lib/wharf/contracts/delphioracle.ts delphioracle

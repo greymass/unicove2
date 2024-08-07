@@ -1,10 +1,6 @@
 import { type Checksum256, type Transaction } from '@wharfkit/antelope';
-import type { TransactArgs, TransactOptions, TransactResult } from '@wharfkit/session';
-import { TransactPluginStatusEmitter } from './plugins/status';
+import type { TransactArgs, TransactOptions } from '@wharfkit/session';
 import { addToast, updateToast } from '../state/toaster.svelte';
-import { getWharf } from '$lib/state/client/wharf.svelte';
-
-const wharf = getWharf();
 
 export enum StatusType {
 	CREATED = 'CREATED',
@@ -49,55 +45,11 @@ export function updateStatus(id: Checksum256, status: StatusType) {
 	}
 }
 
-export async function transact(
-	args: TransactArgs,
-	options?: TransactOptions
-): Promise<TransactResult | undefined> {
-	if (!wharf.session) {
-		throw new Error('No active session available to transact with.');
-	}
-
-	const transaction: QueuedTransaction = {
-		status: StatusType.CREATED,
-		args,
-		options
-	};
-
-	const result = await wharf.session
-		.transact(args, {
-			...options,
-			transactPlugins: [new TransactPluginStatusEmitter()]
-		})
-		.catch((e: Error) => {
-			transaction.status = StatusType.ERROR;
-			transaction.error = String(e);
-			transactions.push(transaction);
-			const { id } = sendErrorToast(transaction);
-			transaction.toastId = id;
-			throw e;
-		});
-
-	if (!result.resolved || !result.response) {
-		transaction.status = StatusType.ERROR;
-		transaction.error = 'Transaction was not resolved.';
-		const { id } = sendErrorToast(transaction);
-		transaction.toastId = id;
-
-		transactions.push(transaction);
-		throw new Error('Transaction was not resolved.');
-	}
-
-	transaction.status = StatusType.BROADCAST;
-	transaction.response = result.response;
-	transaction.transaction = result.resolved.transaction;
-	const { id } = sendSuccessToast(transaction);
-	transaction.toastId = id;
-	transactions.push(transaction);
-
-	return result;
+export function queueTransaction(tx: QueuedTransaction) {
+	transactions.push(tx);
 }
 
-function sendErrorToast(tx: QueuedTransaction) {
+export function sendErrorToast(tx: QueuedTransaction) {
 	return addToast({
 		data: {
 			title: tx.status,
@@ -108,7 +60,7 @@ function sendErrorToast(tx: QueuedTransaction) {
 	});
 }
 
-function sendSuccessToast(tx: QueuedTransaction) {
+export function sendSuccessToast(tx: QueuedTransaction) {
 	return addToast({
 		data: {
 			title: tx.status,

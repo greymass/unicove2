@@ -46,16 +46,16 @@ export namespace Types {
 	@Struct.type('key_weight')
 	export class key_weight extends Struct {
 		@Struct.field(PublicKey)
-		key!: PublicKey;
+		declare key: PublicKey;
 		@Struct.field(UInt16)
-		weight!: UInt16;
+		declare weight: UInt16;
 	}
 	@Struct.type('block_signing_authority_v0')
 	export class block_signing_authority_v0 extends Struct {
 		@Struct.field(UInt32)
-		threshold!: UInt32;
+		declare threshold: UInt32;
 		@Struct.field(key_weight, { array: true })
-		keys!: key_weight[];
+		declare keys: key_weight[];
 	}
 	@Variant.type('variant_block_signing_authority_v0', [block_signing_authority_v0])
 	export class variant_block_signing_authority_v0 extends Variant {
@@ -64,1192 +64,1192 @@ export namespace Types {
 	@Struct.type('abi_hash')
 	export class abi_hash extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Checksum256)
-		hash!: Checksum256;
+		declare hash: Checksum256;
 	}
 	@Struct.type('action_return_buyram')
 	export class action_return_buyram extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field(Int64)
-		bytes_purchased!: Int64;
+		declare bytes_purchased: Int64;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 		@Struct.field(Asset)
-		fee!: Asset;
+		declare fee: Asset;
 	}
 	@Struct.type('action_return_ramtransfer')
 	export class action_return_ramtransfer extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field(Int64)
-		from_ram_bytes!: Int64;
+		declare from_ram_bytes: Int64;
 		@Struct.field(Int64)
-		to_ram_bytes!: Int64;
+		declare to_ram_bytes: Int64;
 	}
 	@Struct.type('action_return_sellram')
 	export class action_return_sellram extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field(Int64)
-		bytes_sold!: Int64;
+		declare bytes_sold: Int64;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 		@Struct.field(Asset)
-		fee!: Asset;
+		declare fee: Asset;
 	}
 	@Struct.type('activate')
 	export class activate extends Struct {
 		@Struct.field(Checksum256)
-		feature_digest!: Checksum256;
+		declare feature_digest: Checksum256;
 	}
 	@Struct.type('permission_level')
 	export class permission_level extends Struct {
 		@Struct.field(Name)
-		actor!: Name;
+		declare actor: Name;
 		@Struct.field(Name)
-		permission!: Name;
+		declare permission: Name;
 	}
 	@Struct.type('permission_level_weight')
 	export class permission_level_weight extends Struct {
 		@Struct.field(permission_level)
-		permission!: permission_level;
+		declare permission: permission_level;
 		@Struct.field(UInt16)
-		weight!: UInt16;
+		declare weight: UInt16;
 	}
 	@Struct.type('wait_weight')
 	export class wait_weight extends Struct {
 		@Struct.field(UInt32)
-		wait_sec!: UInt32;
+		declare wait_sec: UInt32;
 		@Struct.field(UInt16)
-		weight!: UInt16;
+		declare weight: UInt16;
 	}
 	@Struct.type('authority')
 	export class authority extends Struct {
 		@Struct.field(UInt32)
-		threshold!: UInt32;
+		declare threshold: UInt32;
 		@Struct.field(key_weight, { array: true })
-		keys!: key_weight[];
+		declare keys: key_weight[];
 		@Struct.field(permission_level_weight, { array: true })
-		accounts!: permission_level_weight[];
+		declare accounts: permission_level_weight[];
 		@Struct.field(wait_weight, { array: true })
-		waits!: wait_weight[];
+		declare waits: wait_weight[];
 	}
 	@Struct.type('bid_refund')
 	export class bid_refund extends Struct {
 		@Struct.field(Name)
-		bidder!: Name;
+		declare bidder: Name;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('bidname')
 	export class bidname extends Struct {
 		@Struct.field(Name)
-		bidder!: Name;
+		declare bidder: Name;
 		@Struct.field(Name)
-		newname!: Name;
+		declare newname: Name;
 		@Struct.field(Asset)
-		bid!: Asset;
+		declare bid: Asset;
 	}
 	@Struct.type('bidrefund')
 	export class bidrefund extends Struct {
 		@Struct.field(Name)
-		bidder!: Name;
+		declare bidder: Name;
 		@Struct.field(Name)
-		newname!: Name;
+		declare newname: Name;
 	}
 	@Struct.type('producer_key')
 	export class producer_key extends Struct {
 		@Struct.field(Name)
-		producer_name!: Name;
+		declare producer_name: Name;
 		@Struct.field(PublicKey)
-		block_signing_key!: PublicKey;
+		declare block_signing_key: PublicKey;
 	}
 	@Struct.type('producer_schedule')
 	export class producer_schedule extends Struct {
 		@Struct.field(UInt32)
-		version!: UInt32;
+		declare version: UInt32;
 		@Struct.field(producer_key, { array: true })
-		producers!: producer_key[];
+		declare producers: producer_key[];
 	}
 	@Struct.type('block_header')
 	export class block_header extends Struct {
 		@Struct.field(UInt32)
-		timestamp!: UInt32;
+		declare timestamp: UInt32;
 		@Struct.field(Name)
-		producer!: Name;
+		declare producer: Name;
 		@Struct.field(UInt16)
-		confirmed!: UInt16;
+		declare confirmed: UInt16;
 		@Struct.field(Checksum256)
-		previous!: Checksum256;
+		declare previous: Checksum256;
 		@Struct.field(Checksum256)
-		transaction_mroot!: Checksum256;
+		declare transaction_mroot: Checksum256;
 		@Struct.field(Checksum256)
-		action_mroot!: Checksum256;
+		declare action_mroot: Checksum256;
 		@Struct.field(UInt32)
-		schedule_version!: UInt32;
+		declare schedule_version: UInt32;
 		@Struct.field(producer_schedule, { optional: true })
-		new_producers?: producer_schedule;
+		declare new_producers?: producer_schedule;
 	}
 	@Struct.type('block_info_record')
 	export class block_info_record extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(UInt32)
-		block_height!: UInt32;
+		declare block_height: UInt32;
 		@Struct.field(TimePoint)
-		block_timestamp!: TimePoint;
+		declare block_timestamp: TimePoint;
 	}
 	@Struct.type('blockchain_parameters')
 	export class blockchain_parameters extends Struct {
 		@Struct.field(UInt64)
-		max_block_net_usage!: UInt64;
+		declare max_block_net_usage: UInt64;
 		@Struct.field(UInt32)
-		target_block_net_usage_pct!: UInt32;
+		declare target_block_net_usage_pct: UInt32;
 		@Struct.field(UInt32)
-		max_transaction_net_usage!: UInt32;
+		declare max_transaction_net_usage: UInt32;
 		@Struct.field(UInt32)
-		base_per_transaction_net_usage!: UInt32;
+		declare base_per_transaction_net_usage: UInt32;
 		@Struct.field(UInt32)
-		net_usage_leeway!: UInt32;
+		declare net_usage_leeway: UInt32;
 		@Struct.field(UInt32)
-		context_free_discount_net_usage_num!: UInt32;
+		declare context_free_discount_net_usage_num: UInt32;
 		@Struct.field(UInt32)
-		context_free_discount_net_usage_den!: UInt32;
+		declare context_free_discount_net_usage_den: UInt32;
 		@Struct.field(UInt32)
-		max_block_cpu_usage!: UInt32;
+		declare max_block_cpu_usage: UInt32;
 		@Struct.field(UInt32)
-		target_block_cpu_usage_pct!: UInt32;
+		declare target_block_cpu_usage_pct: UInt32;
 		@Struct.field(UInt32)
-		max_transaction_cpu_usage!: UInt32;
+		declare max_transaction_cpu_usage: UInt32;
 		@Struct.field(UInt32)
-		min_transaction_cpu_usage!: UInt32;
+		declare min_transaction_cpu_usage: UInt32;
 		@Struct.field(UInt32)
-		max_transaction_lifetime!: UInt32;
+		declare max_transaction_lifetime: UInt32;
 		@Struct.field(UInt32)
-		deferred_trx_expiration_window!: UInt32;
+		declare deferred_trx_expiration_window: UInt32;
 		@Struct.field(UInt32)
-		max_transaction_delay!: UInt32;
+		declare max_transaction_delay: UInt32;
 		@Struct.field(UInt32)
-		max_inline_action_size!: UInt32;
+		declare max_inline_action_size: UInt32;
 		@Struct.field(UInt16)
-		max_inline_action_depth!: UInt16;
+		declare max_inline_action_depth: UInt16;
 		@Struct.field(UInt16)
-		max_authority_depth!: UInt16;
+		declare max_authority_depth: UInt16;
 	}
 	@Struct.type('blockchain_parameters_v1')
 	export class blockchain_parameters_v1 extends blockchain_parameters {
 		@Struct.field(UInt32, { optional: true })
-		max_action_return_value_size?: UInt32;
+		declare max_action_return_value_size?: UInt32;
 	}
 	@Struct.type('buyram')
 	export class buyram extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		quant!: Asset;
+		declare quant: Asset;
 	}
 	@Struct.type('buyramburn')
 	export class buyramburn extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('buyrambytes')
 	export class buyrambytes extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(UInt32)
-		bytes!: UInt32;
+		declare bytes: UInt32;
 	}
 	@Struct.type('buyramself')
 	export class buyramself extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Asset)
-		quant!: Asset;
+		declare quant: Asset;
 	}
 	@Struct.type('buyrex')
 	export class buyrex extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('canceldelay')
 	export class canceldelay extends Struct {
 		@Struct.field(permission_level)
-		canceling_auth!: permission_level;
+		declare canceling_auth: permission_level;
 		@Struct.field(Checksum256)
-		trx_id!: Checksum256;
+		declare trx_id: Checksum256;
 	}
 	@Struct.type('powerup_config_resource')
 	export class powerup_config_resource extends Struct {
 		@Struct.field(Int64, { optional: true })
-		current_weight_ratio?: Int64;
+		declare current_weight_ratio?: Int64;
 		@Struct.field(Int64, { optional: true })
-		target_weight_ratio?: Int64;
+		declare target_weight_ratio?: Int64;
 		@Struct.field(Int64, { optional: true })
-		assumed_stake_weight?: Int64;
+		declare assumed_stake_weight?: Int64;
 		@Struct.field(TimePointSec, { optional: true })
-		target_timestamp?: TimePointSec;
+		declare target_timestamp?: TimePointSec;
 		@Struct.field(Float64, { optional: true })
-		exponent?: Float64;
+		declare exponent?: Float64;
 		@Struct.field(UInt32, { optional: true })
-		decay_secs?: UInt32;
+		declare decay_secs?: UInt32;
 		@Struct.field(Asset, { optional: true })
-		min_price?: Asset;
+		declare min_price?: Asset;
 		@Struct.field(Asset, { optional: true })
-		max_price?: Asset;
+		declare max_price?: Asset;
 	}
 	@Struct.type('powerup_config')
 	export class powerup_config extends Struct {
 		@Struct.field(powerup_config_resource)
-		net!: powerup_config_resource;
+		declare net: powerup_config_resource;
 		@Struct.field(powerup_config_resource)
-		cpu!: powerup_config_resource;
+		declare cpu: powerup_config_resource;
 		@Struct.field(UInt32, { optional: true })
-		powerup_days?: UInt32;
+		declare powerup_days?: UInt32;
 		@Struct.field(Asset, { optional: true })
-		min_powerup_fee?: Asset;
+		declare min_powerup_fee?: Asset;
 	}
 	@Struct.type('cfgpowerup')
 	export class cfgpowerup extends Struct {
 		@Struct.field(powerup_config)
-		args!: powerup_config;
+		declare args: powerup_config;
 	}
 	@Struct.type('claimrewards')
 	export class claimrewards extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('closerex')
 	export class closerex extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('cnclrexorder')
 	export class cnclrexorder extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('connector')
 	export class connector extends Struct {
 		@Struct.field(Asset)
-		balance!: Asset;
+		declare balance: Asset;
 		@Struct.field(Float64)
-		weight!: Float64;
+		declare weight: Float64;
 	}
 	@Struct.type('consolidate')
 	export class consolidate extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('defcpuloan')
 	export class defcpuloan extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('defnetloan')
 	export class defnetloan extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('delegatebw')
 	export class delegatebw extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		stake_net_quantity!: Asset;
+		declare stake_net_quantity: Asset;
 		@Struct.field(Asset)
-		stake_cpu_quantity!: Asset;
+		declare stake_cpu_quantity: Asset;
 		@Struct.field('bool')
-		transfer!: boolean;
+		declare transfer: boolean;
 	}
 	@Struct.type('delegated_bandwidth')
 	export class delegated_bandwidth extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Asset)
-		net_weight!: Asset;
+		declare net_weight: Asset;
 		@Struct.field(Asset)
-		cpu_weight!: Asset;
+		declare cpu_weight: Asset;
 	}
 	@Struct.type('deleteauth')
 	export class deleteauth extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name)
-		permission!: Name;
+		declare permission: Name;
 		@Struct.field(Name, { optional: true })
-		authorized_by?: Name;
+		declare authorized_by?: Name;
 	}
 	@Struct.type('delschedule')
 	export class delschedule extends Struct {
 		@Struct.field(TimePointSec)
-		start_time!: TimePointSec;
+		declare start_time: TimePointSec;
 	}
 	@Struct.type('deposit')
 	export class deposit extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('donatetorex')
 	export class donatetorex extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('eosio_global_state')
 	export class eosio_global_state extends blockchain_parameters {
 		@Struct.field(UInt64)
-		max_ram_size!: UInt64;
+		declare max_ram_size: UInt64;
 		@Struct.field(UInt64)
-		total_ram_bytes_reserved!: UInt64;
+		declare total_ram_bytes_reserved: UInt64;
 		@Struct.field(Int64)
-		total_ram_stake!: Int64;
+		declare total_ram_stake: Int64;
 		@Struct.field(BlockTimestamp)
-		last_producer_schedule_update!: BlockTimestamp;
+		declare last_producer_schedule_update: BlockTimestamp;
 		@Struct.field(TimePoint)
-		last_pervote_bucket_fill!: TimePoint;
+		declare last_pervote_bucket_fill: TimePoint;
 		@Struct.field(Int64)
-		pervote_bucket!: Int64;
+		declare pervote_bucket: Int64;
 		@Struct.field(Int64)
-		perblock_bucket!: Int64;
+		declare perblock_bucket: Int64;
 		@Struct.field(UInt32)
-		total_unpaid_blocks!: UInt32;
+		declare total_unpaid_blocks: UInt32;
 		@Struct.field(Int64)
-		total_activated_stake!: Int64;
+		declare total_activated_stake: Int64;
 		@Struct.field(TimePoint)
-		thresh_activated_stake_time!: TimePoint;
+		declare thresh_activated_stake_time: TimePoint;
 		@Struct.field(UInt16)
-		last_producer_schedule_size!: UInt16;
+		declare last_producer_schedule_size: UInt16;
 		@Struct.field(Float64)
-		total_producer_vote_weight!: Float64;
+		declare total_producer_vote_weight: Float64;
 		@Struct.field(BlockTimestamp)
-		last_name_close!: BlockTimestamp;
+		declare last_name_close: BlockTimestamp;
 	}
 	@Struct.type('eosio_global_state2')
 	export class eosio_global_state2 extends Struct {
 		@Struct.field(UInt16)
-		new_ram_per_block!: UInt16;
+		declare new_ram_per_block: UInt16;
 		@Struct.field(BlockTimestamp)
-		last_ram_increase!: BlockTimestamp;
+		declare last_ram_increase: BlockTimestamp;
 		@Struct.field(BlockTimestamp)
-		last_block_num!: BlockTimestamp;
+		declare last_block_num: BlockTimestamp;
 		@Struct.field(Float64)
-		total_producer_votepay_share!: Float64;
+		declare total_producer_votepay_share: Float64;
 		@Struct.field(UInt8)
-		revision!: UInt8;
+		declare revision: UInt8;
 	}
 	@Struct.type('eosio_global_state3')
 	export class eosio_global_state3 extends Struct {
 		@Struct.field(TimePoint)
-		last_vpay_state_update!: TimePoint;
+		declare last_vpay_state_update: TimePoint;
 		@Struct.field(Float64)
-		total_vpay_share_change_rate!: Float64;
+		declare total_vpay_share_change_rate: Float64;
 	}
 	@Struct.type('eosio_global_state4')
 	export class eosio_global_state4 extends Struct {
 		@Struct.field(Float64)
-		continuous_rate!: Float64;
+		declare continuous_rate: Float64;
 		@Struct.field(Int64)
-		inflation_pay_factor!: Int64;
+		declare inflation_pay_factor: Int64;
 		@Struct.field(Int64)
-		votepay_factor!: Int64;
+		declare votepay_factor: Int64;
 	}
 	@Struct.type('exchange_state')
 	export class exchange_state extends Struct {
 		@Struct.field(Asset)
-		supply!: Asset;
+		declare supply: Asset;
 		@Struct.field(connector)
-		base!: connector;
+		declare base: connector;
 		@Struct.field(connector)
-		quote!: connector;
+		declare quote: connector;
 	}
 	@Struct.type('execschedule')
 	export class execschedule extends Struct {}
 	@Struct.type('fundcpuloan')
 	export class fundcpuloan extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 		@Struct.field(Asset)
-		payment!: Asset;
+		declare payment: Asset;
 	}
 	@Struct.type('fundnetloan')
 	export class fundnetloan extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 		@Struct.field(Asset)
-		payment!: Asset;
+		declare payment: Asset;
 	}
 	@Struct.type('init')
 	export class init extends Struct {
 		@Struct.field(VarUInt)
-		version!: VarUInt;
+		declare version: VarUInt;
 		@Struct.field(Asset.Symbol)
-		core!: Asset.Symbol;
+		declare core: Asset.Symbol;
 	}
 	@Struct.type('limitauthchg')
 	export class limitauthchg extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name, { array: true })
-		allow_perms!: Name[];
+		declare allow_perms: Name[];
 		@Struct.field(Name, { array: true })
-		disallow_perms!: Name[];
+		declare disallow_perms: Name[];
 	}
 	@Struct.type('linkauth')
 	export class linkauth extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name)
-		code!: Name;
+		declare code: Name;
 		@Struct.field(Name)
-		type!: Name;
+		declare type: Name;
 		@Struct.field(Name)
-		requirement!: Name;
+		declare requirement: Name;
 		@Struct.field(Name, { optional: true })
-		authorized_by?: Name;
+		declare authorized_by?: Name;
 	}
 	@Struct.type('logbuyram')
 	export class logbuyram extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 		@Struct.field(Asset)
-		fee!: Asset;
+		declare fee: Asset;
 	}
 	@Struct.type('logramchange')
 	export class logramchange extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 	}
 	@Struct.type('logsellram')
 	export class logsellram extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 		@Struct.field(Asset)
-		fee!: Asset;
+		declare fee: Asset;
 	}
 	@Struct.type('logsystemfee')
 	export class logsystemfee extends Struct {
 		@Struct.field(Name)
-		protocol!: Name;
+		declare protocol: Name;
 		@Struct.field(Asset)
-		fee!: Asset;
+		declare fee: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('mvfrsavings')
 	export class mvfrsavings extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		rex!: Asset;
+		declare rex: Asset;
 	}
 	@Struct.type('mvtosavings')
 	export class mvtosavings extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		rex!: Asset;
+		declare rex: Asset;
 	}
 	@Struct.type('name_bid')
 	export class name_bid extends Struct {
 		@Struct.field(Name)
-		newname!: Name;
+		declare newname: Name;
 		@Struct.field(Name)
-		high_bidder!: Name;
+		declare high_bidder: Name;
 		@Struct.field(Int64)
-		high_bid!: Int64;
+		declare high_bid: Int64;
 		@Struct.field(TimePoint)
-		last_bid_time!: TimePoint;
+		declare last_bid_time: TimePoint;
 	}
 	@Struct.type('newaccount')
 	export class newaccount extends Struct {
 		@Struct.field(Name)
-		creator!: Name;
+		declare creator: Name;
 		@Struct.field(Name)
-		name!: Name;
+		declare name: Name;
 		@Struct.field(authority)
-		owner!: authority;
+		declare owner: authority;
 		@Struct.field(authority)
-		active!: authority;
+		declare active: authority;
 	}
 	@Struct.type('onblock')
 	export class onblock extends Struct {
 		@Struct.field(block_header)
-		header!: block_header;
+		declare header: block_header;
 	}
 	@Struct.type('onerror')
 	export class onerror extends Struct {
 		@Struct.field(UInt128)
-		sender_id!: UInt128;
+		declare sender_id: UInt128;
 		@Struct.field(Bytes)
-		sent_trx!: Bytes;
+		declare sent_trx: Bytes;
 	}
 	@Struct.type('pair_time_point_sec_int64')
 	export class pair_time_point_sec_int64 extends Struct {
 		@Struct.field(TimePointSec)
-		first!: TimePointSec;
+		declare first: TimePointSec;
 		@Struct.field(Int64)
-		second!: Int64;
+		declare second: Int64;
 	}
 	@Struct.type('powerup')
 	export class powerup extends Struct {
 		@Struct.field(Name)
-		payer!: Name;
+		declare payer: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(UInt32)
-		days!: UInt32;
+		declare days: UInt32;
 		@Struct.field(Int64)
-		net_frac!: Int64;
+		declare net_frac: Int64;
 		@Struct.field(Int64)
-		cpu_frac!: Int64;
+		declare cpu_frac: Int64;
 		@Struct.field(Asset)
-		max_payment!: Asset;
+		declare max_payment: Asset;
 	}
 	@Struct.type('powerup_order')
 	export class powerup_order extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(UInt64)
-		id!: UInt64;
+		declare id: UInt64;
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Int64)
-		net_weight!: Int64;
+		declare net_weight: Int64;
 		@Struct.field(Int64)
-		cpu_weight!: Int64;
+		declare cpu_weight: Int64;
 		@Struct.field(TimePointSec)
-		expires!: TimePointSec;
+		declare expires: TimePointSec;
 	}
 	@Struct.type('powerup_state_resource')
 	export class powerup_state_resource extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Int64)
-		weight!: Int64;
+		declare weight: Int64;
 		@Struct.field(Int64)
-		weight_ratio!: Int64;
+		declare weight_ratio: Int64;
 		@Struct.field(Int64)
-		assumed_stake_weight!: Int64;
+		declare assumed_stake_weight: Int64;
 		@Struct.field(Int64)
-		initial_weight_ratio!: Int64;
+		declare initial_weight_ratio: Int64;
 		@Struct.field(Int64)
-		target_weight_ratio!: Int64;
+		declare target_weight_ratio: Int64;
 		@Struct.field(TimePointSec)
-		initial_timestamp!: TimePointSec;
+		declare initial_timestamp: TimePointSec;
 		@Struct.field(TimePointSec)
-		target_timestamp!: TimePointSec;
+		declare target_timestamp: TimePointSec;
 		@Struct.field(Float64)
-		exponent!: Float64;
+		declare exponent: Float64;
 		@Struct.field(UInt32)
-		decay_secs!: UInt32;
+		declare decay_secs: UInt32;
 		@Struct.field(Asset)
-		min_price!: Asset;
+		declare min_price: Asset;
 		@Struct.field(Asset)
-		max_price!: Asset;
+		declare max_price: Asset;
 		@Struct.field(Int64)
-		utilization!: Int64;
+		declare utilization: Int64;
 		@Struct.field(Int64)
-		adjusted_utilization!: Int64;
+		declare adjusted_utilization: Int64;
 		@Struct.field(TimePointSec)
-		utilization_timestamp!: TimePointSec;
+		declare utilization_timestamp: TimePointSec;
 	}
 	@Struct.type('powerup_state')
 	export class powerup_state extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(powerup_state_resource)
-		net!: powerup_state_resource;
+		declare net: powerup_state_resource;
 		@Struct.field(powerup_state_resource)
-		cpu!: powerup_state_resource;
+		declare cpu: powerup_state_resource;
 		@Struct.field(UInt32)
-		powerup_days!: UInt32;
+		declare powerup_days: UInt32;
 		@Struct.field(Asset)
-		min_powerup_fee!: Asset;
+		declare min_powerup_fee: Asset;
 	}
 	@Struct.type('powerupexec')
 	export class powerupexec extends Struct {
 		@Struct.field(Name)
-		user!: Name;
+		declare user: Name;
 		@Struct.field(UInt16)
-		max!: UInt16;
+		declare max: UInt16;
 	}
 	@Struct.type('producer_info')
 	export class producer_info extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Float64)
-		total_votes!: Float64;
+		declare total_votes: Float64;
 		@Struct.field(PublicKey)
-		producer_key!: PublicKey;
+		declare producer_key: PublicKey;
 		@Struct.field('bool')
-		is_active!: boolean;
+		declare is_active: boolean;
 		@Struct.field('string')
-		url!: string;
+		declare url: string;
 		@Struct.field(UInt32)
-		unpaid_blocks!: UInt32;
+		declare unpaid_blocks: UInt32;
 		@Struct.field(TimePoint)
-		last_claim_time!: TimePoint;
+		declare last_claim_time: TimePoint;
 		@Struct.field(UInt16)
-		location!: UInt16;
+		declare location: UInt16;
 		@Struct.field(variant_block_signing_authority_v0, { optional: true })
-		producer_authority?: variant_block_signing_authority_v0;
+		declare producer_authority?: variant_block_signing_authority_v0;
 	}
 	@Struct.type('producer_info2')
 	export class producer_info2 extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Float64)
-		votepay_share!: Float64;
+		declare votepay_share: Float64;
 		@Struct.field(TimePoint)
-		last_votepay_share_update!: TimePoint;
+		declare last_votepay_share_update: TimePoint;
 	}
 	@Struct.type('ramburn')
 	export class ramburn extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('ramtransfer')
 	export class ramtransfer extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('refund')
 	export class refund extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('refund_request')
 	export class refund_request extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(TimePointSec)
-		request_time!: TimePointSec;
+		declare request_time: TimePointSec;
 		@Struct.field(Asset)
-		net_amount!: Asset;
+		declare net_amount: Asset;
 		@Struct.field(Asset)
-		cpu_amount!: Asset;
+		declare cpu_amount: Asset;
 	}
 	@Struct.type('regproducer')
 	export class regproducer extends Struct {
 		@Struct.field(Name)
-		producer!: Name;
+		declare producer: Name;
 		@Struct.field(PublicKey)
-		producer_key!: PublicKey;
+		declare producer_key: PublicKey;
 		@Struct.field('string')
-		url!: string;
+		declare url: string;
 		@Struct.field(UInt16)
-		location!: UInt16;
+		declare location: UInt16;
 	}
 	@Struct.type('regproducer2')
 	export class regproducer2 extends Struct {
 		@Struct.field(Name)
-		producer!: Name;
+		declare producer: Name;
 		@Struct.field(variant_block_signing_authority_v0)
-		producer_authority!: variant_block_signing_authority_v0;
+		declare producer_authority: variant_block_signing_authority_v0;
 		@Struct.field('string')
-		url!: string;
+		declare url: string;
 		@Struct.field(UInt16)
-		location!: UInt16;
+		declare location: UInt16;
 	}
 	@Struct.type('regproxy')
 	export class regproxy extends Struct {
 		@Struct.field(Name)
-		proxy!: Name;
+		declare proxy: Name;
 		@Struct.field('bool')
-		isproxy!: boolean;
+		declare isproxy: boolean;
 	}
 	@Struct.type('rentcpu')
 	export class rentcpu extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		loan_payment!: Asset;
+		declare loan_payment: Asset;
 		@Struct.field(Asset)
-		loan_fund!: Asset;
+		declare loan_fund: Asset;
 	}
 	@Struct.type('rentnet')
 	export class rentnet extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		loan_payment!: Asset;
+		declare loan_payment: Asset;
 		@Struct.field(Asset)
-		loan_fund!: Asset;
+		declare loan_fund: Asset;
 	}
 	@Struct.type('rex_balance')
 	export class rex_balance extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		vote_stake!: Asset;
+		declare vote_stake: Asset;
 		@Struct.field(Asset)
-		rex_balance!: Asset;
+		declare rex_balance: Asset;
 		@Struct.field(Int64)
-		matured_rex!: Int64;
+		declare matured_rex: Int64;
 		@Struct.field(pair_time_point_sec_int64, { array: true })
-		rex_maturities!: pair_time_point_sec_int64[];
+		declare rex_maturities: pair_time_point_sec_int64[];
 	}
 	@Struct.type('rex_fund')
 	export class rex_fund extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		balance!: Asset;
+		declare balance: Asset;
 	}
 	@Struct.type('rex_loan')
 	export class rex_loan extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		payment!: Asset;
+		declare payment: Asset;
 		@Struct.field(Asset)
-		balance!: Asset;
+		declare balance: Asset;
 		@Struct.field(Asset)
-		total_staked!: Asset;
+		declare total_staked: Asset;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 		@Struct.field(TimePoint)
-		expiration!: TimePoint;
+		declare expiration: TimePoint;
 	}
 	@Struct.type('rex_maturity')
 	export class rex_maturity extends Struct {
 		@Struct.field(UInt32)
-		num_of_maturity_buckets!: UInt32;
+		declare num_of_maturity_buckets: UInt32;
 		@Struct.field('bool')
-		sell_matured_rex!: boolean;
+		declare sell_matured_rex: boolean;
 		@Struct.field('bool')
-		buy_rex_to_savings!: boolean;
+		declare buy_rex_to_savings: boolean;
 	}
 	@Struct.type('rex_order')
 	export class rex_order extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		rex_requested!: Asset;
+		declare rex_requested: Asset;
 		@Struct.field(Asset)
-		proceeds!: Asset;
+		declare proceeds: Asset;
 		@Struct.field(Asset)
-		stake_change!: Asset;
+		declare stake_change: Asset;
 		@Struct.field(TimePoint)
-		order_time!: TimePoint;
+		declare order_time: TimePoint;
 		@Struct.field('bool')
-		is_open!: boolean;
+		declare is_open: boolean;
 	}
 	@Struct.type('rex_pool')
 	export class rex_pool extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Asset)
-		total_lent!: Asset;
+		declare total_lent: Asset;
 		@Struct.field(Asset)
-		total_unlent!: Asset;
+		declare total_unlent: Asset;
 		@Struct.field(Asset)
-		total_rent!: Asset;
+		declare total_rent: Asset;
 		@Struct.field(Asset)
-		total_lendable!: Asset;
+		declare total_lendable: Asset;
 		@Struct.field(Asset)
-		total_rex!: Asset;
+		declare total_rex: Asset;
 		@Struct.field(Asset)
-		namebid_proceeds!: Asset;
+		declare namebid_proceeds: Asset;
 		@Struct.field(UInt64)
-		loan_num!: UInt64;
+		declare loan_num: UInt64;
 	}
 	@Struct.type('rex_return_buckets')
 	export class rex_return_buckets extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(pair_time_point_sec_int64, { array: true })
-		return_buckets!: pair_time_point_sec_int64[];
+		declare return_buckets: pair_time_point_sec_int64[];
 	}
 	@Struct.type('rex_return_pool')
 	export class rex_return_pool extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(TimePointSec)
-		last_dist_time!: TimePointSec;
+		declare last_dist_time: TimePointSec;
 		@Struct.field(TimePointSec)
-		pending_bucket_time!: TimePointSec;
+		declare pending_bucket_time: TimePointSec;
 		@Struct.field(TimePointSec)
-		oldest_bucket_time!: TimePointSec;
+		declare oldest_bucket_time: TimePointSec;
 		@Struct.field(Int64)
-		pending_bucket_proceeds!: Int64;
+		declare pending_bucket_proceeds: Int64;
 		@Struct.field(Int64)
-		current_rate_of_increase!: Int64;
+		declare current_rate_of_increase: Int64;
 		@Struct.field(Int64)
-		proceeds!: Int64;
+		declare proceeds: Int64;
 	}
 	@Struct.type('rexexec')
 	export class rexexec extends Struct {
 		@Struct.field(Name)
-		user!: Name;
+		declare user: Name;
 		@Struct.field(UInt16)
-		max!: UInt16;
+		declare max: UInt16;
 	}
 	@Struct.type('rmvproducer')
 	export class rmvproducer extends Struct {
 		@Struct.field(Name)
-		producer!: Name;
+		declare producer: Name;
 	}
 	@Struct.type('schedules_info')
 	export class schedules_info extends Struct {
 		@Struct.field(TimePointSec)
-		start_time!: TimePointSec;
+		declare start_time: TimePointSec;
 		@Struct.field(Float64)
-		continuous_rate!: Float64;
+		declare continuous_rate: Float64;
 	}
 	@Struct.type('sellram')
 	export class sellram extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Int64)
-		bytes!: Int64;
+		declare bytes: Int64;
 	}
 	@Struct.type('sellrex')
 	export class sellrex extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Asset)
-		rex!: Asset;
+		declare rex: Asset;
 	}
 	@Struct.type('setabi')
 	export class setabi extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Bytes)
-		abi!: Bytes;
+		declare abi: Bytes;
 		@Struct.field('string', { optional: true })
-		memo?: string;
+		declare memo?: string;
 	}
 	@Struct.type('setacctcpu')
 	export class setacctcpu extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Int64, { optional: true })
-		cpu_weight?: Int64;
+		declare cpu_weight?: Int64;
 	}
 	@Struct.type('setacctnet')
 	export class setacctnet extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Int64, { optional: true })
-		net_weight?: Int64;
+		declare net_weight?: Int64;
 	}
 	@Struct.type('setacctram')
 	export class setacctram extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Int64, { optional: true })
-		ram_bytes?: Int64;
+		declare ram_bytes?: Int64;
 	}
 	@Struct.type('setalimits')
 	export class setalimits extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 		@Struct.field(Int64)
-		net_weight!: Int64;
+		declare net_weight: Int64;
 		@Struct.field(Int64)
-		cpu_weight!: Int64;
+		declare cpu_weight: Int64;
 	}
 	@Struct.type('setcode')
 	export class setcode extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(UInt8)
-		vmtype!: UInt8;
+		declare vmtype: UInt8;
 		@Struct.field(UInt8)
-		vmversion!: UInt8;
+		declare vmversion: UInt8;
 		@Struct.field(Bytes)
-		code!: Bytes;
+		declare code: Bytes;
 		@Struct.field('string', { optional: true })
-		memo?: string;
+		declare memo?: string;
 	}
 	@Struct.type('setinflation')
 	export class setinflation extends Struct {
 		@Struct.field(Int64)
-		annual_rate!: Int64;
+		declare annual_rate: Int64;
 		@Struct.field(Int64)
-		inflation_pay_factor!: Int64;
+		declare inflation_pay_factor: Int64;
 		@Struct.field(Int64)
-		votepay_factor!: Int64;
+		declare votepay_factor: Int64;
 	}
 	@Struct.type('setparams')
 	export class setparams extends Struct {
 		@Struct.field(blockchain_parameters_v1)
-		params!: blockchain_parameters_v1;
+		declare params: blockchain_parameters_v1;
 	}
 	@Struct.type('setpayfactor')
 	export class setpayfactor extends Struct {
 		@Struct.field(Int64)
-		inflation_pay_factor!: Int64;
+		declare inflation_pay_factor: Int64;
 		@Struct.field(Int64)
-		votepay_factor!: Int64;
+		declare votepay_factor: Int64;
 	}
 	@Struct.type('setpriv')
 	export class setpriv extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(UInt8)
-		is_priv!: UInt8;
+		declare is_priv: UInt8;
 	}
 	@Struct.type('setram')
 	export class setram extends Struct {
 		@Struct.field(UInt64)
-		max_ram_size!: UInt64;
+		declare max_ram_size: UInt64;
 	}
 	@Struct.type('setramrate')
 	export class setramrate extends Struct {
 		@Struct.field(UInt16)
-		bytes_per_block!: UInt16;
+		declare bytes_per_block: UInt16;
 	}
 	@Struct.type('setrex')
 	export class setrex extends Struct {
 		@Struct.field(Asset)
-		balance!: Asset;
+		declare balance: Asset;
 	}
 	@Struct.type('setrexmature')
 	export class setrexmature extends Struct {
 		@Struct.field(UInt32, { optional: true })
-		num_of_maturity_buckets?: UInt32;
+		declare num_of_maturity_buckets?: UInt32;
 		@Struct.field('bool', { optional: true })
-		sell_matured_rex?: boolean;
+		declare sell_matured_rex?: boolean;
 		@Struct.field('bool', { optional: true })
-		buy_rex_to_savings?: boolean;
+		declare buy_rex_to_savings?: boolean;
 	}
 	@Struct.type('setschedule')
 	export class setschedule extends Struct {
 		@Struct.field(TimePointSec)
-		start_time!: TimePointSec;
+		declare start_time: TimePointSec;
 		@Struct.field(Float64)
-		continuous_rate!: Float64;
+		declare continuous_rate: Float64;
 	}
 	@Struct.type('undelegatebw')
 	export class undelegatebw extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		unstake_net_quantity!: Asset;
+		declare unstake_net_quantity: Asset;
 		@Struct.field(Asset)
-		unstake_cpu_quantity!: Asset;
+		declare unstake_cpu_quantity: Asset;
 	}
 	@Struct.type('unlinkauth')
 	export class unlinkauth extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name)
-		code!: Name;
+		declare code: Name;
 		@Struct.field(Name)
-		type!: Name;
+		declare type: Name;
 		@Struct.field(Name, { optional: true })
-		authorized_by?: Name;
+		declare authorized_by?: Name;
 	}
 	@Struct.type('unregprod')
 	export class unregprod extends Struct {
 		@Struct.field(Name)
-		producer!: Name;
+		declare producer: Name;
 	}
 	@Struct.type('unstaketorex')
 	export class unstaketorex extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Name)
-		receiver!: Name;
+		declare receiver: Name;
 		@Struct.field(Asset)
-		from_net!: Asset;
+		declare from_net: Asset;
 		@Struct.field(Asset)
-		from_cpu!: Asset;
+		declare from_cpu: Asset;
 	}
 	@Struct.type('unvest')
 	export class unvest extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Asset)
-		unvest_net_quantity!: Asset;
+		declare unvest_net_quantity: Asset;
 		@Struct.field(Asset)
-		unvest_cpu_quantity!: Asset;
+		declare unvest_cpu_quantity: Asset;
 	}
 	@Struct.type('updateauth')
 	export class updateauth extends Struct {
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name)
-		permission!: Name;
+		declare permission: Name;
 		@Struct.field(Name)
-		parent!: Name;
+		declare parent: Name;
 		@Struct.field(authority)
-		auth!: authority;
+		declare auth: authority;
 		@Struct.field(Name, { optional: true })
-		authorized_by?: Name;
+		declare authorized_by?: Name;
 	}
 	@Struct.type('updaterex')
 	export class updaterex extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 	}
 	@Struct.type('updtrevision')
 	export class updtrevision extends Struct {
 		@Struct.field(UInt8)
-		revision!: UInt8;
+		declare revision: UInt8;
 	}
 	@Struct.type('user_resources')
 	export class user_resources extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		net_weight!: Asset;
+		declare net_weight: Asset;
 		@Struct.field(Asset)
-		cpu_weight!: Asset;
+		declare cpu_weight: Asset;
 		@Struct.field(Int64)
-		ram_bytes!: Int64;
+		declare ram_bytes: Int64;
 	}
 	@Struct.type('voteproducer')
 	export class voteproducer extends Struct {
 		@Struct.field(Name)
-		voter!: Name;
+		declare voter: Name;
 		@Struct.field(Name)
-		proxy!: Name;
+		declare proxy: Name;
 		@Struct.field(Name, { array: true })
-		producers!: Name[];
+		declare producers: Name[];
 	}
 	@Struct.type('voter_info')
 	export class voter_info extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Name)
-		proxy!: Name;
+		declare proxy: Name;
 		@Struct.field(Name, { array: true })
-		producers!: Name[];
+		declare producers: Name[];
 		@Struct.field(Int64)
-		staked!: Int64;
+		declare staked: Int64;
 		@Struct.field(Float64)
-		last_vote_weight!: Float64;
+		declare last_vote_weight: Float64;
 		@Struct.field(Float64)
-		proxied_vote_weight!: Float64;
+		declare proxied_vote_weight: Float64;
 		@Struct.field('bool')
-		is_proxy!: boolean;
+		declare is_proxy: boolean;
 		@Struct.field(UInt32)
-		flags1!: UInt32;
+		declare flags1: UInt32;
 		@Struct.field(UInt32)
-		reserved2!: UInt32;
+		declare reserved2: UInt32;
 		@Struct.field(Asset)
-		reserved3!: Asset;
+		declare reserved3: Asset;
 	}
 	@Struct.type('voteupdate')
 	export class voteupdate extends Struct {
 		@Struct.field(Name)
-		voter_name!: Name;
+		declare voter_name: Name;
 	}
 	@Struct.type('wasmcfg')
 	export class wasmcfg extends Struct {
 		@Struct.field(Name)
-		settings!: Name;
+		declare settings: Name;
 	}
 	@Struct.type('withdraw')
 	export class withdraw extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset)
-		amount!: Asset;
+		declare amount: Asset;
 	}
 	@Struct.type('limit_auth_change')
 	export class limit_auth_change extends Struct {
 		@Struct.field(UInt8)
-		version!: UInt8;
+		declare version: UInt8;
 		@Struct.field(Name)
-		account!: Name;
+		declare account: Name;
 		@Struct.field(Name, { array: true })
-		allow_perms!: Name[];
+		declare allow_perms: Name[];
 		@Struct.field(Name, { array: true })
-		disallow_perms!: Name[];
+		declare disallow_perms: Name[];
 	}
 }
 export const TableMap = {

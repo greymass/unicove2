@@ -3,9 +3,9 @@
 	import Language from '$lib/components/language.svelte';
 	import Button from '$lib/components/button/button.svelte';
 	import { Box, Center, Stack } from '$lib/components/layout';
+	import { getWharf } from '$lib/state/client/wharf.svelte';
 
-	const { data } = $props();
-	const { wharf } = $derived(data);
+	const wharf = getWharf();
 </script>
 
 <Box>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages.js';
+	import { getWharf } from '$lib/state/client/wharf.svelte';
 
-	const { data } = $props();
-	const { wharf } = $derived(data);
+	const wharf = getWharf();
 </script>
 
 {#if wharf.session}

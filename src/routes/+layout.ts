@@ -16,7 +16,9 @@ function generateMetadata(url: URL): SeoConfig {
 export const load = async ({ fetch, params, url }) => {
 	const baseMetaTags = generateMetadata(url);
 	const network = getNetworkFromParams(params.network, fetch);
-	await network.refresh();
+	if (!network.loaded) {
+		await network.refresh();
+	}
 	return {
 		baseMetaTags,
 		network

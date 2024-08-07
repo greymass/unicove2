@@ -10,82 +10,82 @@ export namespace Types {
 	@Struct.type('account')
 	export class account extends Struct {
 		@Struct.field(Asset)
-		balance!: Asset;
+		declare balance: Asset;
 	}
 	@Struct.type('close')
 	export class close extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset.Symbol)
-		symbol!: Asset.Symbol;
+		declare symbol: Asset.Symbol;
 	}
 	@Struct.type('create')
 	export class create extends Struct {
 		@Struct.field(Name)
-		issuer!: Name;
+		declare issuer: Name;
 		@Struct.field(Asset)
-		maximum_supply!: Asset;
+		declare maximum_supply: Asset;
 	}
 	@Struct.type('currency_stats')
 	export class currency_stats extends Struct {
 		@Struct.field(Asset)
-		supply!: Asset;
+		declare supply: Asset;
 		@Struct.field(Asset)
-		max_supply!: Asset;
+		declare max_supply: Asset;
 		@Struct.field(Name)
-		issuer!: Name;
+		declare issuer: Name;
 	}
 	@Struct.type('issue')
 	export class issue extends Struct {
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('issuefixed')
 	export class issuefixed extends Struct {
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Asset)
-		supply!: Asset;
+		declare supply: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('open')
 	export class open extends Struct {
 		@Struct.field(Name)
-		owner!: Name;
+		declare owner: Name;
 		@Struct.field(Asset.Symbol)
-		symbol!: Asset.Symbol;
+		declare symbol: Asset.Symbol;
 		@Struct.field(Name)
-		ram_payer!: Name;
+		declare ram_payer: Name;
 	}
 	@Struct.type('retire')
 	export class retire extends Struct {
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 	@Struct.type('setmaxsupply')
 	export class setmaxsupply extends Struct {
 		@Struct.field(Name)
-		issuer!: Name;
+		declare issuer: Name;
 		@Struct.field(Asset)
-		maximum_supply!: Asset;
+		declare maximum_supply: Asset;
 	}
 	@Struct.type('transfer')
 	export class transfer extends Struct {
 		@Struct.field(Name)
-		from!: Name;
+		declare from: Name;
 		@Struct.field(Name)
-		to!: Name;
+		declare to: Name;
 		@Struct.field(Asset)
-		quantity!: Asset;
+		declare quantity: Asset;
 		@Struct.field('string')
-		memo!: string;
+		declare memo: string;
 	}
 }
 export const TableMap = {

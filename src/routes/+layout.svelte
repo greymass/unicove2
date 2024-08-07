@@ -2,7 +2,7 @@
 	import '../app.css';
 	import 'inter-ui/inter-latin.css';
 	import extend from 'just-extend';
-	import { onMount, setContext } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { Head, type SeoConfig } from 'svead';
 	import { ParaglideJS } from '@inlang/paraglide-sveltekit';
 
@@ -19,9 +19,9 @@
 	const account = getAccount();
 	const wharf = getWharf();
 	$effect(() => {
-		wharf.session ? account.load(wharf.session) : account.clear();
+		const { session } = wharf;
+		untrack(() => (session ? account.load(session.chain, session.actor) : account.clear()));
 	});
-	setContext('account', account);
 
 	const seo_config: SeoConfig = $derived<SeoConfig>(
 		extend({}, data.baseMetaTags, $page.data.pageMetaTags)
@@ -47,9 +47,6 @@
 				account.refresh();
 			}
 		}, ACCOUNT_UPDATE_INTERVAL);
-
-		// Refresh the network state
-		network.refresh();
 
 		// Update the network state on a set interval
 		const networkInterval = setInterval(() => {
