@@ -83,7 +83,7 @@ export class AccountState {
 
 	async refresh() {
 		const response = await this.fetch(
-			`/api/${chainMapper.toShortName(String(this.chain.id))}/account/${this.name}`
+			`/${chainMapper.toShortName(String(this.chain.id))}/api/account/${this.name}`
 		);
 		const json = await response.json();
 		this.last_update = new Date();

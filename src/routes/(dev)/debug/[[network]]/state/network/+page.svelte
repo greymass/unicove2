@@ -10,7 +10,7 @@
 	const { network } = $derived(data);
 
 	const shortName = $derived(chainMapper.toShortName(String(network?.chain.id)));
-	const apiPath = $derived(`${$page.url.protocol}//${$page.url.host}/api/${shortName}/network`);
+	const apiPath = $derived(`${$page.url.protocol}//${$page.url.host}/${shortName}/api/network`);
 </script>
 
 <Stack>
