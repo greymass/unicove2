@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Cluster, PageMargin, Switcher } from '$lib/components/layout';
+	import LanguageSelect from '$lib/components/select/language.svelte';
 </script>
 
 <PageMargin>
-	<Switcher>
-		<a href="/">Home</a>
+	<nav class="flex flex-wrap items-center justify-between gap-4">
+		<a class="grow" href="/">Home</a>
 
-		<Cluster tag="nav" class="justify-end">
+		<Cluster tag="nav" class="items-center justify-end">
 			<a href="/account">My Account</a>
 			<a href="/account/eosio">Account: eosio</a>
 			<a href="/block/100000">Block 100,000</a>
@@ -14,6 +15,7 @@
 				>Transaction</a
 			>
 			<a href="/msig/evilmikehere/t">msig</a>
+			<LanguageSelect />
 		</Cluster>
-	</Switcher>
+	</nav>
 </PageMargin>
