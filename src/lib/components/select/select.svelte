@@ -9,10 +9,21 @@
 		options: SelectOption[];
 		selected: SelectOption;
 		id: string;
-		onSelectedChange: ChangeFn<SelectOption | undefined>;
+		onSelectedChange?: ChangeFn<SelectOption | undefined>;
+		required?: boolean;
+		disabled?: boolean;
+		multiple?: boolean;
 	}
 
-	let { id, options, selected: _selected = $bindable(), onSelectedChange }: Props = $props();
+	let {
+		id,
+		options,
+		selected: _selected = $bindable(),
+		onSelectedChange,
+		required,
+		disabled,
+		multiple
+	}: Props = $props();
 
 	const {
 		elements: { trigger, menu, option },
@@ -21,6 +32,9 @@
 	} = createSelect({
 		defaultSelected: _selected || options[0],
 		onSelectedChange,
+		required,
+		disabled,
+		multiple,
 		forceVisible: true,
 		positioning: {
 			placement: 'bottom',
