@@ -52,11 +52,14 @@
 			focus-visible:outline-2
 			focus-visible:outline-offset-[-2px]
 			focus-visible:outline-solar-500
-			disabled:bg-mineShaft-700
+			disabled:bg-mineShaft-950
+			disabled:border-mineShaft-950
 			data-[state=checked]:border-skyBlue-500
 			data-[state=checked]:bg-skyBlue-500
 			data-[state=checked]:hover:border-skyBlue-400
 			data-[state=checked]:hover:bg-skyBlue-400
+			data-[state=checked]:disabled:bg-mineShaft-950
+			data-[state=checked]:disabled:border-mineShaft-950
 			"
 		{id}
 		aria-labelledby={ariaLabelledBy}

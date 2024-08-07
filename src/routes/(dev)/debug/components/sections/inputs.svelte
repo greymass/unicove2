@@ -53,22 +53,22 @@
 		<div>
 			<h2 class="h2">Switch</h2>
 			<Label for="mySwitch-1">Default:</Label>
-			<Switch id="mySwitch-1" name="mySwitch-1" />
+			<Switch id="mySwitch-1" name="mySwitch-1" isDisabled={false} isChecked={false} />
 			<Label for="mySwitch-2">Disabled:</Label>
-			<Switch id="mySwitch-2" name="mySwitch-2" isDisabled={true} />
+			<Switch id="mySwitch-2" name="mySwitch-2" isDisabled={true} isChecked={true} />
 			<Label for="mySwitch-3">Checked:</Label>
-			<Switch id="mySwitch-3" name="mySwitch-3" bind:isChecked={controlledSwitch} />
+			<Switch id="mySwitch-3" name="mySwitch-3" isDisabled={false} bind:isChecked={controlledSwitch} />
 
 			<p>Switch is {controlledSwitch ? 'on' : 'off'}</p>
 		</div>
 		<div class="mt-5">
 			<h2 class="h2">Checkbox</h2>
 			<Label for="myCheckbox-1">Default:</Label>
-			<Checkbox id="myCheckbox-1" name="myCheckbox-1" />
+			<Checkbox id="myCheckbox-1" name="myCheckbox-1" isDisabled={false} isChecked={false} />
 			<Label for="myCheckbox-2">Disabled:</Label>
-			<Checkbox id="myCheckbox-2" name="myCheckbox-2" isDisabled={true} />
+			<Checkbox id="myCheckbox-2" name="myCheckbox-2" isDisabled={true} isChecked={true} />
 			<Label for="myCheckbox-3">Checked:</Label>
-			<Checkbox id="myCheckbox-3" name="myCheckbox-3" bind:isChecked={controlledSwitch} />
+			<Checkbox id="myCheckbox-3" name="myCheckbox-3" isDisabled={false} bind:isChecked={controlledSwitch} />
 
 			<p>Checkbox is {controlledSwitch ? 'checked' : 'empty'}</p>
 		</div>

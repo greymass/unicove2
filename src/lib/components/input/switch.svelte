@@ -51,6 +51,8 @@
 		data-[state=checked]:bg-skyBlue-500
 		data-[state=checked]:hover:border-skyBlue-400
 		data-[state=checked]:hover:bg-skyBlue-400
+		data-[state=checked]:disabled:bg-mineShaft-950
+		data-[state=checked]:disabled:border-mineShaft-950
 "
 		{id}
 		aria-labelledby={ariaLabelledBy}
