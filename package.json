@@ -55,6 +55,7 @@
 		"big.js": "^6.2.1",
 		"inter-ui": "^4.0.2",
 		"just-extend": "^6.2.0",
+		"lucide-svelte": "^0.424.0",
 		"prettier-plugin-organize-imports": "^4.0.0",
 		"svead": "^0.0.11",
 		"typescript-svelte-plugin": "^0.3.40"
