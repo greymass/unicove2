@@ -1,8 +1,8 @@
 <script>
 	import * as m from '$lib/paraglide/messages.js';
-	import Language from '$lib/components/language.svelte';
 	import Button from '$lib/components/button/button.svelte';
 	import { Box, Center, Stack } from '$lib/components/layout';
+	import { languageTag } from '$lib/paraglide/runtime';
 
 	const { data } = $props();
 	const { wharf } = $derived(data);
@@ -11,7 +11,9 @@
 <Box>
 	<Center>
 		<Stack>
-			<Language />
+			<p>Language: {languageTag()}</p>
+
+			<p>Test Localization String: {m.test_locale_string()}</p>
 
 			<Button href="/debug/input/asset">Asset Input</Button>
 			<Button href="/debug/state/network">Network State</Button>

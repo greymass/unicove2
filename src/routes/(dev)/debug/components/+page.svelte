@@ -2,6 +2,7 @@
 	import { Sidebar, Stack } from '$lib/components/layout';
 	import Typography from './sections/typography.svelte';
 	import Buttons from './sections/buttons.svelte';
+	import Select from './sections/select.svelte';
 	import Inputs from './sections/inputs.svelte';
 	import Cards from './sections/cards.svelte';
 	import Navigation from './sections/navigation.svelte';
@@ -29,27 +30,31 @@
 			<Stack class="space-y-12">
 				<Typography />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Buttons />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
+
+				<Select />
+
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Inputs />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Cards />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Navigation />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Code />
 
-				<hr class="h-px my-8 bg-slate-200 border-0 dark:bg-slate-800" />
+				<hr class="my-8 h-px border-0 bg-slate-200 dark:bg-slate-800" />
 
 				<Layouts />
 			</Stack>
