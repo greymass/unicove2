@@ -7,8 +7,7 @@
 	import AssetElement from '$lib/components/elements/asset.svelte';
 	import { ramtoken } from '$lib/wharf/chains';
 	import Row from '../components/row.svelte';
-	import * as m from '$lib/paraglide/messages';
-	import { Chip } from 'unicove-components';
+	import { Chip } from '@wharfkit/svelte-components';
 
 	interface Props extends Omit<ActionSummaryProps, 'data'> {
 		data: SystemContract.Types.buyrambytes;
@@ -19,7 +18,7 @@
 
 <Row>
 	<div class="flex items-center gap-2">
-		<Chip>{m.common_requesting()}</Chip>
+		<Chip>Requesting</Chip>
 		<AssetElement value={Asset.fromUnits(data.bytes, ramtoken.symbol)} variant="full" />
 	</div>
 

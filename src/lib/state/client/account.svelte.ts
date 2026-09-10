@@ -39,6 +39,16 @@ import {
 	tokenEquals,
 	ZeroUnits
 } from '$lib/types/token';
+import { localizePath } from '$lib/utils/url';
+
+export class AccountFetchError extends Error {
+	constructor(
+		message: string,
+		public readonly status: number
+	) {
+		super(message);
+	}
+}
 
 export class AccountState {
 	public client?: APIClient = $state();
@@ -79,10 +89,12 @@ export class AccountState {
 	}
 
 	async refresh() {
-		const response = await this.fetch(`/${this.network}/api/account/${this.name}`);
+		const path = localizePath(`/api/account/${this.name}`);
+		const response = await this.fetch(path);
 		if (!response.ok) {
-			throw new Error(
-				`Failed to fetch account data for ${this.name} on ${this.network.chain.name}`
+			throw new AccountFetchError(
+				`Failed to fetch account data for ${this.name} on ${this.network.chain.name}`,
+				response.status
 			);
 		}
 		const json = await response.json();
@@ -403,6 +415,11 @@ export function getBalances(
 		balance: Asset.fromUnits(resources.ram.used, token.symbol),
 		name: 'used'
 	});
+	const ramgifted = TokenBalanceChild.from({
+		token,
+		balance: Asset.fromUnits(resources.ram.gifted, token.symbol),
+		name: 'gifted'
+	});
 
 	let wrambalance: TokenBalanceChild | undefined;
 	if (network.supports('wram')) {
@@ -417,7 +434,7 @@ export function getBalances(
 		});
 	}
 
-	const children: TokenBalanceChild[] = [ramtotal, ramused];
+	const children: TokenBalanceChild[] = [ramtotal, ramused, ramgifted];
 
 	if (wrambalance) {
 		children.push(wrambalance);
@@ -427,7 +444,7 @@ export function getBalances(
 	balances.push(
 		TokenBalance.from({
 			token,
-			balance: Asset.fromUnits(resources.ram.available, token.symbol),
+			balance: Asset.fromUnits(resources.ram.balance, token.symbol),
 			locked: !network.supports('ramtransfer'),
 			children
 		})

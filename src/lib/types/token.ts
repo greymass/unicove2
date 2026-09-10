@@ -2,6 +2,7 @@ import {
 	Asset,
 	Checksum256,
 	Name,
+	Serializer,
 	Struct,
 	TimePointSec,
 	UInt64,
@@ -19,6 +20,20 @@ export class TokenDefinition extends Struct {
 	get url(): string {
 		return `${this.contract}/${String(this.symbol).toLowerCase()}`;
 	}
+}
+
+// Accepts a JSON array or the legacy ABI-encoded hex of token_definition[]
+export function parseTokenDefinitions(value?: string): TokenDefinition[] {
+	if (!value) return [];
+	const trimmed = value.trim();
+	if (trimmed.startsWith('[')) {
+		return JSON.parse(trimmed).map((token: unknown) => TokenDefinition.from(token));
+	}
+	return Serializer.decode({
+		type: 'token_definition[]',
+		customTypes: [TokenDefinition],
+		data: trimmed
+	}) as TokenDefinition[];
 }
 
 @Struct.type('distribution')

@@ -1,13 +1,10 @@
 import type { Transport } from '@sveltejs/kit';
 
-import { i18n } from '$lib/i18n';
 import { NetworkState } from '$lib/state/network.svelte';
 import { AccountState } from '$lib/state/client/account.svelte';
 import { Name } from '@wharfkit/antelope';
 import type { SerializedAccountState } from '$lib/types/account';
 import type { SerializedNetworkState } from '$lib/types/network';
-
-export const reroute = i18n.reroute();
 
 export const transport: Transport = {
 	AccountState: {

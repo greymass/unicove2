@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { createSelect, type SelectOption } from '@melt-ui/svelte';
-	import { SelectTrigger, SelectMenu, SelectItem } from 'unicove-components';
+	import { SelectTrigger, SelectMenu, SelectItem } from '@wharfkit/svelte-components';
 	import { writable } from 'svelte/store';
-	import * as m from '$lib/paraglide/messages';
-	import { TokenBalance } from '$lib/types/token';
+	import { TokenBalance, tokenEquals } from '$lib/types/token';
 	import type { ChangeFn } from '@melt-ui/svelte/internal/helpers';
-	import { Code } from 'unicove-components';
+	import { Code } from '@wharfkit/svelte-components';
 
 	interface BalanceSelectOption extends SelectOption<number> {
 		image?: string;
@@ -93,7 +92,7 @@
 		} else {
 			_selected = balance;
 			const option = balanceOptions.find((o) =>
-				TokenBalance.from(options[o.value]).equals(balance)
+				tokenEquals(options[o.value].token.id, balance.token.id)
 			);
 			if (option) {
 				selectedBalanceOption.set(option);
@@ -108,7 +107,7 @@
 	<!-- {#if selectedTokenImage}
 		<img src={selectedTokenImage} alt={$selectedLabel} class="mr-2 size-5 object-contain" />
 	{/if} -->
-	{_selected ? label(_selected) : m.common_select_an_option()}
+	{_selected ? label(_selected) : 'Select an option'}
 </SelectTrigger>
 
 {#if $open}

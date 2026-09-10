@@ -23,4 +23,6 @@
 	{...props}
 />
 
-<Transfer from={PUBLIC_SYSTEM_CONTRACT} to={'eosio.fees'} quantity={data.fee} {...props} />
+{#if data.fee}
+	<Transfer from={PUBLIC_SYSTEM_CONTRACT} to={'eosio.fees'} quantity={data.fee} {...props} />
+{/if}

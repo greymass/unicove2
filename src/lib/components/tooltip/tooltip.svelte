@@ -3,7 +3,6 @@
 	import { fade } from 'svelte/transition';
 	import { type Snippet } from 'svelte';
 	import { type Icon } from '@lucide/svelte';
-	import Info from '@lucide/svelte/icons/info';
 
 	interface Props {
 		content: string;
@@ -17,7 +16,7 @@
 	const {
 		content,
 		children,
-		icon = Info,
+		icon,
 		fadeDuration = 50,
 		openDelay = 300,
 		closeDelay = 300

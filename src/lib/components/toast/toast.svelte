@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { melt, type Toast } from '@melt-ui/svelte';
+	import { page } from '$app/state';
 
 	import type { elements as toastElements, ToastData } from '$lib/state/toaster.svelte';
+	import { localizePath, resolveLocale } from '$lib/utils/url';
 
 	interface Props {
 		elements: typeof toastElements;
@@ -12,6 +14,9 @@
 	let { elements, toast }: Props = $props();
 	let { description, content, title, close } = $derived(elements);
 	let { id, data } = $derived(toast);
+	const transactionsHref = $derived(
+		localizePath('/transactions', { forceLocale: resolveLocale(page.url.pathname) })
+	);
 </script>
 
 <!-- TODO: Color audit -->
@@ -21,7 +26,7 @@
 	out:fly={{ duration: 150, x: '100%' }}
 	use:melt={$content(id)}
 >
-	<a class="text-inherit no-underline" href="/transactions">
+	<a class="text-inherit no-underline" href={transactionsHref}>
 		<div class="relative flex items-center justify-between gap-4 p-5">
 			<div>
 				<h3 class="flex items-center gap-2 font-semibold" use:melt={$title(id)}>

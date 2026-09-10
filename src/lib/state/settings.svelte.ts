@@ -1,17 +1,20 @@
 import { browser } from '$app/environment';
 import type { ActionDisplayVariants } from '$lib/types';
 import { SupportedCurrencies } from '$lib/types/currencies';
+import { locales } from 'virtual:wuchale/locales';
 
 export enum SettingKeys {
 	'actionDisplayVariant' = 'actionDisplayVariant',
-	'advancedMode' = 'advancedMode',
 	'debugMode' = 'debugMode',
 	'developerMode' = 'developerMode',
 	'increasedPrecision' = 'increasedPrecision',
+	'locale' = 'locale',
 	'mockPrice' = 'mockPrice',
 	'preventAccountPageSwitching' = 'preventAccountPageSwitching',
 	'searchAccountSwitch' = 'searchAccountSwitch',
-	'searchShowPages' = 'searchShowPages'
+	'searchShowPages' = 'searchShowPages',
+	'showApprovedProposals' = 'showApprovedProposals',
+	'warnSuspiciousMemos' = 'warnSuspiciousMemos'
 }
 
 export enum TimeSeconds {
@@ -38,28 +41,43 @@ export enum TimeSeconds {
 
 export interface SettingsData {
 	actionDisplayVariant?: ActionDisplayVariants;
-	advancedMode?: boolean;
 	displayCurrency: SupportedCurrencies;
 	debugMode?: boolean;
 	developerMode?: boolean;
 	increasedPrecision?: boolean;
+	locale: string;
 	mockPrice?: boolean;
 	preventAccountPageSwitching?: boolean;
 	searchAccountSwitch?: boolean;
 	searchShowPages?: boolean;
+	showApprovedProposals?: boolean;
+	warnSuspiciousMemos?: boolean;
+}
+
+function getDefaultLocale() {
+	let defaultLocale = 'en';
+	if (browser) {
+		const fromNavigator = navigator.language.split('-')[0];
+		if (locales.includes(fromNavigator)) {
+			defaultLocale = fromNavigator;
+		}
+	}
+	return defaultLocale;
 }
 
 const defaultSettings: SettingsData = {
-	actionDisplayVariant: 'summary',
-	advancedMode: false,
+	actionDisplayVariant: 'table',
 	displayCurrency: SupportedCurrencies.USD,
 	debugMode: false,
 	developerMode: false,
 	increasedPrecision: false,
+	locale: getDefaultLocale(),
 	mockPrice: false,
 	preventAccountPageSwitching: false,
 	searchAccountSwitch: false,
-	searchShowPages: true
+	searchShowPages: true,
+	showApprovedProposals: false,
+	warnSuspiciousMemos: true
 };
 
 export class SettingsState {
@@ -71,11 +89,7 @@ export class SettingsState {
 			if (item)
 				this.data = {
 					...defaultSettings,
-					...this.deserialize(item),
-					// TODO: Once we want this to persist, remove this
-					// Currently running as a soft migratio for users
-					// to not have to deal changing the setting.
-					actionDisplayVariant: 'summary'
+					...this.deserialize(item)
 				};
 		}
 		$effect(() => {
@@ -84,10 +98,11 @@ export class SettingsState {
 	}
 
 	get<T>(key: SettingKeys, value: T) {
-		if (!this.data[key]) {
+		const keyName = key as keyof SettingsData;
+		if (!this.data[keyName]) {
 			return value;
 		}
-		return this.data[key] as T;
+		return this.data[keyName] as T;
 	}
 
 	serialize(data: SettingsData): string {

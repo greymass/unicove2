@@ -7,18 +7,17 @@
 		type Checksum256Type
 	} from '@wharfkit/antelope';
 	import Account from '$lib/components/elements/account.svelte';
-	import { Code, Stack } from 'unicove-components';
+	import { Code, Stack } from '@wharfkit/svelte-components';
 	import Contract from '$lib/components/elements/contract.svelte';
-	import { DateTime } from 'unicove-components';
+	import { DateTime } from '@wharfkit/svelte-components';
 	import type { ActionDisplayVariants } from '$lib/types';
 	import Transaction from './transaction.svelte';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import { getContext, type Component } from 'svelte';
 	import type { ActionSummaryProps, ObjectifiedActionData } from '$lib/types/transaction';
 	import SquareTerminal from '@lucide/svelte/icons/square-terminal';
-	import { Card } from 'unicove-components';
+	import { Card } from '@wharfkit/svelte-components';
 
-	import * as m from '$lib/paraglide/messages';
 	import ActionSummaryContainer from '$lib/components/summary/components/container.svelte';
 	import { getActionSummaryTitle } from '../summary';
 	import { PUBLIC_SYSTEM_CONTRACT } from '$env/static/public';
@@ -47,8 +46,6 @@
 		variant = 'pretty'
 	}: Props = $props();
 
-	let advancedMode = $derived(context.settings.data.advancedMode);
-
 	let summaryTitle = $derived(getActionSummaryTitle(action.account, action.name, objectified));
 </script>
 
@@ -63,7 +60,7 @@
 			</dt>
 			{#if isArray}
 				<dd class="inline">
-					<span class="sr-only">{m.common_length()}</span>({value.length})
+					<span class="sr-only">length</span>({value.length})
 				</dd>
 			{/if}
 		{:else}
@@ -100,7 +97,7 @@
 
 {#snippet Decoded()}
 	{#await context.network.decodeAction(action)}
-		<Code json={m.common_loading()} />
+		<Code json="Loading" />
 	{:then result}
 		<Code json={result} />
 	{:catch error}
@@ -110,7 +107,11 @@
 {/snippet}
 
 {#snippet Pretty(data: ObjectifiedActionData | undefined)}
-	<Code collapsible class="bg-surface-container-high mt-1" indent={4}>
+	<Code
+		collapsible
+		class="bg-surface-container-high mt-1 [&_pre]:break-words [&_pre]:whitespace-pre-wrap [&.overflow-y-hidden]:max-h-80"
+		indent={4}
+	>
 		{#if data}
 			<dl>
 				{#each Object.keys(data) as key}
@@ -120,7 +121,7 @@
 				{/each}
 			</dl>
 		{:else}
-			<span class="text-muted">{m.common_no_data()}</span>
+			<span class="text-muted">No data</span>
 		{/if}
 	</Code>
 {/snippet}
@@ -225,7 +226,7 @@
 	<div class="flex justify-between gap-6 px-1">
 		<div>
 			{#if action.authorization.length}
-				<span class="text-muted text-xs">{m.common_signed_by()}</span>
+				<span class="text-muted text-xs">Signed by</span>
 				<ul class="inline">
 					{#each action.authorization as auth}
 						<li class="inline">
@@ -240,8 +241,8 @@
 
 		<!-- This section is reversed so the list reads better for a11y -->
 		<div class="flex flex-row-reverse flex-wrap-reverse items-baseline gap-1 text-right">
-			{#if advancedMode && notified}
-				<span class="text-muted text-xs">{m.common_notified()}</span>
+			{#if notified}
+				<span class="text-muted text-xs">notified</span>
 				<ul class="inline">
 					{#each notified as account}
 						<li class="group inline text-xs nth-last-2:after:content-['and_']">
@@ -273,7 +274,7 @@
 				{/if}
 				{@render Pretty(objectified)}
 			{/snippet}
-			{#if variant === 'summary'}
+			{#if variant === 'summary' || variant === 'table'}
 				{@render Summary()}
 			{:else if variant === 'ricardian'}
 				{@render Ricardian()}

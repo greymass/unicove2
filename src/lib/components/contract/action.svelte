@@ -7,9 +7,9 @@
 	import ContractActionOverview from '$lib/components/contract/action/overview.svelte';
 	import ContractActionParams from '$lib/components/contract/action/params.svelte';
 	import ContractActionResponse from '$lib/components/contract/action/response.svelte';
-	import { Code } from 'unicove-components';
-	import { Switcher } from 'unicove-components';
-	import { Stack } from 'unicove-components';
+	import { Code } from '@wharfkit/svelte-components';
+	import { Switcher } from '@wharfkit/svelte-components';
+	import { Stack } from '@wharfkit/svelte-components';
 
 	const context = getContext<UnicoveContext>('state');
 

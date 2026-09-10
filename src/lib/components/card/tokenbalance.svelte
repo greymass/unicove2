@@ -13,14 +13,14 @@
 		ZeroUnits,
 		type TokenPair
 	} from '$lib/types/token';
-	import * as m from '$lib/paraglide/messages';
-	import { Button } from 'unicove-components';
+	import { Button } from '@wharfkit/svelte-components';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
-	import { Code } from 'unicove-components';
+	import { Code } from '@wharfkit/svelte-components';
 	import Link from '$lib/components/elements/link.svelte';
-	import { Details } from 'unicove-components';
+	import { Details } from '@wharfkit/svelte-components';
 
 	const context = getContext<UnicoveContext>('state');
+	const { urlPath } = context;
 
 	interface CTA {
 		text: string;
@@ -68,6 +68,7 @@
 	const balanceDelegated = $derived(_balance.child('delegated'));
 	const balanceUsed = $derived(_balance.child('used'));
 	const balanceWRAM = $derived(_balance.child('wram'));
+	const balanceGifted = $derived(_balance.child('gifted'));
 </script>
 
 {#snippet SubBalance(label: string, value: Asset, action?: { text: string; href: string })}
@@ -100,13 +101,13 @@
 				src={_balance.token.media?.logo?.light}
 			/>
 			{#if isRamToken}
-				<Link class="text-on-surface" href="/{network}/ram">
+				<Link class="text-on-surface" href={urlPath('/ram')}>
 					{balance.token.name} (RAM)
 				</Link>
 			{:else}
 				<Link
 					class="text-on-surface"
-					href="/{network}/token/{balance.token.contract}/{balance.token.name}"
+					href={urlPath(`/token/${balance.token.contract}/${balance.token.name}`)}
 				>
 					{balance.token.name}
 					<Info class="text-muted size-4" />
@@ -143,54 +144,58 @@
 
 <Details class={className} header={DetailsHeader} {open}>
 	{@render SubBalance(
-		m.common_available(),
+		isRamToken ? 'Tradable' : 'Available',
 		_balance.balance,
 		!_balance.locked
 			? {
-					text: m.common_send(),
-					href: `/${network}/send/${balance.token.id.url}`
+					text: 'Send',
+					href: urlPath(`/send/${balance.token.id.url}`)
 				}
 			: undefined
 	)}
 
 	{#if tokenEquals(balance.token.id, network.token.id)}
 		{#if network.supports('staking') && balanceStaked}
-			{@render SubBalance(m.common_staked(), balanceStaked.balance, {
-				text: m.common_staking(),
-				href: `/${network}/staking`
+			{@render SubBalance('Staked', balanceStaked.balance, {
+				text: 'Staking',
+				href: urlPath(`/staking`)
 			})}
 		{/if}
 
 		{#if balanceUnstaked && balanceUnstaked.balance.value > 0}
-			{@render SubBalance(m.common_unstaked(), balanceUnstaked.balance, {
-				text: m.common_withdraw(),
-				href: `/${network}/staking/withdraw`
+			{@render SubBalance('Unstaked', balanceUnstaked.balance, {
+				text: 'Withdraw',
+				href: urlPath(`/staking/withdraw`)
 			})}
 		{/if}
 
 		{#if balanceDelegated && balanceDelegated.balance.value > 0}
-			{@render SubBalance(m.common_delegated(), balanceDelegated.balance, {
-				text: m.common_reclaim(),
-				href: `/${network}/undelegate`
+			{@render SubBalance('Delegated', balanceDelegated.balance, {
+				text: 'Reclaim',
+				href: urlPath(`/undelegate`)
 			})}
 		{/if}
 
 		{#if balanceRefunding && balanceRefunding.balance.value > 0}
-			{@render SubBalance(m.common_refunding(), balanceRefunding.balance, {
-				text: m.common_claim(),
-				href: `/${network}/refund`
+			{@render SubBalance('Refunding', balanceRefunding.balance, {
+				text: 'Claim',
+				href: urlPath(`/refund`)
 			})}
 		{/if}
 	{/if}
 
 	{#if balanceUsed && balanceUsed.balance.value > 0}
-		{@render SubBalance(m.common_used(), balanceUsed.balance)}
+		{@render SubBalance('Used', balanceUsed.balance)}
+	{/if}
+
+	{#if isRamToken && balanceGifted && balanceGifted.balance.value > 0}
+		{@render SubBalance('Gifted (untransferable)', balanceGifted.balance)}
 	{/if}
 
 	{#if isRamToken && balanceWRAM}
 		{@render SubBalance('WRAM', balanceWRAM.balance, {
-			text: m.common_swap(),
-			href: `/${network}/swap/${balanceWRAM.token.id.url}/${network.getRamToken().id.url}`
+			text: 'Swap',
+			href: urlPath(`/swap/${balanceWRAM.token.id.url}/${network.getRamToken().id.url}`)
 		})}
 	{/if}
 

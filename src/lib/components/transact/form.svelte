@@ -18,7 +18,7 @@
 
 {#if error}
 	<TransactError {error} {onfailure} />
-{:else if id}
+{:else if id && onsuccess}
 	<TransactSummary transactionId={id} {onsuccess} />
 {:else}
 	{@render props.children()}

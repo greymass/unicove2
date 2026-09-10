@@ -5,7 +5,7 @@
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import { cn } from '$lib/utils';
 
-	const { network } = getContext<UnicoveContext>('state');
+	const { urlPath } = getContext<UnicoveContext>('state');
 
 	interface Props {
 		name: NameType;
@@ -18,8 +18,8 @@
 
 	let { name, action, struct, table, children, ...props }: Props = $props();
 
-	let href = $derived.by(() => {
-		const base = `/${network}/contract/${name}`;
+	let path = $derived.by(() => {
+		const base = `/contract/${name}`;
 		if (action) {
 			return base + `/actions/${action}`;
 		}
@@ -31,6 +31,8 @@
 		}
 		return base;
 	});
+
+	const href = $derived(urlPath(path));
 </script>
 
 {#if name}

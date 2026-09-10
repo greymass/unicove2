@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Button } from 'unicove-components';
+	import { Button } from '@wharfkit/svelte-components';
 	import { page } from '$app/state';
-	import { cn, goto } from '$lib/utils';
+	import { cn } from '$lib/utils';
 	import { createSelect, melt, type CreateSelectProps } from '@melt-ui/svelte';
 	import { fade } from 'svelte/transition';
 	import { ChevronDown } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 
 	interface Option {
 		href: string;
@@ -18,10 +19,12 @@
 
 	const { options, ...props }: Props = $props();
 
-	let pathWithoutLanguageTag = $derived(page.url.pathname.slice(3));
-
 	let currentOption = $derived(
-		options.map((o) => o.href).findLast((h) => pathWithoutLanguageTag.startsWith(h))
+		options.map((o) => o.href).findLast((h) => page.url.pathname.startsWith(h))
+	);
+
+	let currentLabel = $derived(
+		options.find((o) => o.href === currentOption)?.text ?? options[0].text
 	);
 
 	const isCurrent = (href: string) => currentOption === href;
@@ -36,7 +39,7 @@
 
 	const {
 		elements: { trigger, menu, option },
-		states: { selectedLabel, open }
+		states: { open }
 	} = createSelect<string>({
 		forceVisible: true,
 		preventScroll: false,
@@ -54,6 +57,7 @@
 		<li>
 			<Button
 				variant="pill"
+				class="h-11"
 				aria-current={isCurrent(option.href) ? 'page' : undefined}
 				href={option.href}
 			>
@@ -71,7 +75,7 @@
 		use:melt={$trigger}
 		aria-label="Page"
 	>
-		{$selectedLabel || options[0].text}
+		{currentLabel}
 		<ChevronDown
 			data-open={$open}
 			class="size-5 transition-transform duration-100 data-[open=true]:rotate-180"

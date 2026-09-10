@@ -4,15 +4,14 @@
 	import Transaction from '$lib/components/elements/transaction.svelte';
 	import CircleCheckBig from '@lucide/svelte/icons/circle-check-big';
 	import ClipboardPen from '@lucide/svelte/icons/clipboard-pen';
-	import * as m from '$lib/paraglide/messages';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import { getContext } from 'svelte';
 
 	import { Types as MsigTypes } from '$lib/wharf/contracts/msig';
-	import { Button } from 'unicove-components';
-	import { DD, DL, DLRow } from 'unicove-components';
+	import { Button } from '@wharfkit/svelte-components';
+	import { DD, DL, DLRow } from '@wharfkit/svelte-components';
 
-	const context = getContext<UnicoveContext>('state');
+	const { urlPath } = getContext<UnicoveContext>('state');
 
 	interface Props {
 		transactionId?: Checksum256 | string;
@@ -45,38 +44,37 @@
 				<picture class="size-24">
 					<ClipboardPen class="text-success size-full" />
 				</picture>
-				<h3 class="text-title">{m.common_msig_proposal_created()}</h3>
+				<h3 class="text-title">Multi-Sig Proposal Created</h3>
 				<p class="text-center">
-					{m.common_msig_proposal_description()}
+					The multi-sig proposal for this transaction has been created and now needs to be approved.
+					View the proposal below and share it with the parties who need to sign.
 				</p>
 				{#each proposals as proposal}
-					<Button href="/{context.network}/msig/{proposal.proposer}/{proposal.proposal_name}">
-						{m.common_view_proposal()} ({proposal.proposer}/{proposal.proposal_name})
+					<Button href={urlPath(`/msig/${proposal.proposer}/${proposal.proposal_name}`)}>
+						View Proposal ({proposal.proposer}/{proposal.proposal_name})
 					</Button>
 				{/each}
 			{:else}
 				<picture class="size-24">
 					<CircleCheckBig class="text-success size-full" />
 				</picture>
-				<h3 class="text-title text-center">
-					{m.common_transaction_complete()}
-				</h3>
+				<h3 class="text-title text-center">Transaction Complete</h3>
 			{/if}
 		</div>
 
 		<DL class="bg-surface-container rounded-xl p-4 font-mono">
-			<DLRow title={m.common_status()}>
+			<DLRow title="Status">
 				<DD>{transaction.status}</DD>
 			</DLRow>
 			{#if transaction.transaction}
-				<DLRow title={m.common_trx_id()}>
+				<DLRow title="Transaction ID">
 					<DD><Transaction id={transaction.transaction.id} /></DD>
 				</DLRow>
 			{/if}
 		</DL>
 	{:else}
-		<h2 class="text-headline">{m.common_trx_not_found()}</h2>
-		<p>{m.common_trx_not_found_description({ transactionId: String(transactionId) })}</p>
+		<h2 class="text-headline">Transaction Not Found</h2>
+		<p>The transaction with ID {String(transactionId)} could not be found.</p>
 	{/if}
 	{#if onsuccess}
 		{@render onsuccess()}

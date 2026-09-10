@@ -4,7 +4,7 @@
 	import { cn, truncateCenter } from '$lib/utils';
 	import { getContext, type Snippet } from 'svelte';
 
-	const { network } = getContext<UnicoveContext>('state');
+	const { urlPath } = getContext<UnicoveContext>('state');
 
 	let {
 		id,
@@ -18,7 +18,7 @@
 {#if id}
 	<a
 		class={cn('text-primary hover:text-primary-hover', className)}
-		href="/{network}/transaction/{String(id)}"
+		href={urlPath(`/transaction/${String(id)}`)}
 	>
 		{#if children}
 			{@render children()}

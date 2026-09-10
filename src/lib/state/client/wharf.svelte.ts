@@ -21,7 +21,7 @@ import {
 	Session,
 	SessionKit
 } from '@wharfkit/session';
-import WebRenderer from '@wharfkit/web-renderer';
+import { WebUI } from '@wharfkit/web-ui';
 import { WalletPluginCleos } from '@wharfkit/wallet-plugin-cleos';
 import { AccountCreationPluginMetamask } from '@wharfkit/account-creation-plugin-metamask';
 
@@ -31,6 +31,7 @@ import { type QueuedTransaction, StatusType, queueTransaction } from '$lib/wharf
 import { chainMapper } from '$lib/wharf/chains';
 import type { SettingsState } from '$lib/state/settings.svelte';
 import type { NetworkState } from '$lib/state/network.svelte';
+import type { ProducersState } from '$lib/state/producers.svelte';
 import { chainDefs, msigTransactPlugins, transactPlugins, walletPlugins } from '$lib/wharf/plugins';
 
 export class WharfState {
@@ -46,8 +47,13 @@ export class WharfState {
 	public settings: SettingsState = $state() as SettingsState;
 
 	public metamaskPlugin?: AccountCreationPluginMetamask;
+	public producers?: ProducersState;
+	public proposalNamePrompt: { defaultName: string } | null = $state(null);
+	private proposalNameResolve?: (name: string) => void;
+	private proposalNameReject?: (error: Error) => void;
 
-	constructor(settings: SettingsState) {
+	constructor(settings: SettingsState, producers?: ProducersState) {
+		this.producers = producers;
 		this.settings = settings;
 		if (browser) {
 			this.chainsSession = JSON.parse(localStorage.getItem('chainsSession') || '{}');
@@ -64,7 +70,7 @@ export class WharfState {
 			client: network.client
 		});
 
-		if (this.settings.data.advancedMode) {
+		if (this.settings.data.developerMode) {
 			walletPlugins.push(new WalletPluginCleos());
 		}
 
@@ -81,11 +87,10 @@ export class WharfState {
 			{
 				appName: 'unicove',
 				chains: this.chains,
-				ui: new WebRenderer({ minimal: true }),
+				ui: new WebUI({ minimal: true }),
 				walletPlugins
 			},
 			{
-				acceptUrlSession: true,
 				accountCreationPlugins,
 				transactPlugins
 			}
@@ -107,6 +112,28 @@ export class WharfState {
 			this.session.walletPlugin.data[key] = value;
 			this.sessionKit.persistSession(this.session);
 		}
+	}
+
+	private async promptForProposalName(defaultName: string): Promise<string> {
+		this.proposalNamePrompt = { defaultName };
+		try {
+			return await new Promise<string>((resolve, reject) => {
+				this.proposalNameResolve = resolve;
+				this.proposalNameReject = reject;
+			});
+		} finally {
+			this.proposalNamePrompt = null;
+			this.proposalNameResolve = undefined;
+			this.proposalNameReject = undefined;
+		}
+	}
+
+	public submitProposalName(name: string) {
+		this.proposalNameResolve?.(name);
+	}
+
+	public cancelProposalName() {
+		this.proposalNameReject?.(new Error('Proposal name entry cancelled.'));
 	}
 
 	public async login(options?: LoginOptions): Promise<Session> {
@@ -211,11 +238,28 @@ export class WharfState {
 
 		this.transacting = true;
 
+		const isMsig = this.session.walletPlugin.id === 'wallet-plugin-multisig';
+
+		if (isMsig) {
+			const { generateRandomName } = await import('$lib/utils/random');
+			this.session.walletPlugin.data.nextProposalName =
+				await this.promptForProposalName(generateRandomName());
+			if (this.producers) {
+				this.session.walletPlugin.data.topProducers = this.producers.allActiveProducers
+					.slice(0, 30)
+					.map((p) => String(p.owner));
+			}
+		}
+
 		const result = await this.session
-			.transact(args, { abiCache: this.abiCache })
+			.transact(args, {
+				abiCache: this.abiCache,
+				expireSeconds: 600,
+				...(isMsig && { transactPlugins: msigTransactPlugins })
+			})
 			.catch((e: Error) => {
 				transaction.status = StatusType.ERROR;
-				transaction.error = String(e);
+				transaction.error = e instanceof Error ? e.message : String(e);
 				queueTransaction(transaction);
 				this.transacting = false;
 				throw e;

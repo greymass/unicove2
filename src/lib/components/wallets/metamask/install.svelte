@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Stack, Button } from 'unicove-components';
-	import * as m from '$lib/paraglide/messages';
+	import { Stack, Button } from '@wharfkit/svelte-components';
 
 	interface Props {
 		networkName: string;
@@ -10,25 +9,18 @@
 	let { networkName, productName }: Props = $props();
 </script>
 
-<h2 class="text-xl font-semibold">
-	{m.metamask_install_title({
-		name: productName
-	})}
-</h2>
+<h2 class="text-xl font-semibold">Add {productName} to MetaMask</h2>
 <Stack class="mb-1 gap-2">
 	<p class="leading-snug">
-		{m.metamask_install_p1({
-			name: productName,
-			network: networkName
-		})}
+		The {productName} snap allows you to interact with Unicove and other {networkName}-based dApps
+		using MetaMask.
 	</p>
 	<p class="leading-snug">
-		{m.metamask_install_p2({
-			name: productName
-		})}
+		Begin by installing MetaMask, then come back to this page and install the {productName} snap.
 	</p>
 </Stack>
-<Button href={'https://metamask.io/download/'} blank>{m.metamask_install_action()}</Button>
+<Button href={'https://metamask.io/download/'} blank>Install MetaMask</Button>
 <p class="text-xs text-balance">
-	{m.metamask_install_action_note()}
+	Note: If MetaMask is already installed, you may need to grant permissions for Unicove by manually
+	opening MetaMask.
 </p>

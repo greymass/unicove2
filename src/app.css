@@ -1,8 +1,21 @@
 @import 'tailwindcss';
-@import 'unicove-components';
-@source "../node_modules/unicove-components";
+@import '@wharfkit/svelte-components';
+@source "../node_modules/@wharfkit/svelte-components";
+
+/* The component library defines the warning role only under [data-scheme='dark'], so text-warning is unresolved in light mode. */
+:root:not([data-scheme='dark']) {
+	--role-warning: oklch(0.51 0.1927 var(--warning-hue));
+	--role-on-warning: oklch(1 0 var(--warning-hue));
+	--role-warning-container: oklch(0.92 0.042 var(--warning-hue));
+	--role-on-warning-container: oklch(0.42 0.17 var(--warning-hue));
+}
 
 @theme {
+	/* The component library defines no headline-sm step, but VpHeading, msigCard and approvalprogress all reference it. */
+	--text-headline-sm: var(--text-xl);
+	--text-headline-sm--line-height: 1.25;
+	--text-headline-sm--font-weight: 600;
+
 	/* TODO: turn these into color roles and remove them */
 	--color-green-50: #f0fdf4;
 	--color-green-100: #dcfce7;

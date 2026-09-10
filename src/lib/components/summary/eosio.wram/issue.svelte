@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as WRAMContract from '$lib/wharf/contracts/token';
 	import type { ActionSummaryProps } from '$lib/types/transaction';
-	import { Chip } from 'unicove-components';
+	import { Chip } from '@wharfkit/svelte-components';
 	import AccountElement from '$lib/components/elements/account.svelte';
 	import AssetElement from '$lib/components/elements/asset.svelte';
 	import { Asset, Name } from '@wharfkit/antelope';

@@ -1,37 +1,48 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { i18n, languageNames } from '$lib/i18n';
-	import {
-		availableLanguageTags,
-		languageTag,
-		type AvailableLanguageTag
-	} from '$lib/paraglide/runtime.js';
 	import { createSelect, melt, type CreateSelectProps } from '@melt-ui/svelte';
 	import { fade } from 'svelte/transition';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import { getContext } from 'svelte';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
-	import { goto } from '$app/navigation';
+	import { locales } from 'virtual:wuchale/locales';
+	import { writable } from 'svelte/store';
+	import { cn } from '$lib/utils/style';
 
-	let defaultLang = {
-		value: languageTag(),
-		label: languageNames[languageTag() as keyof typeof languageNames]
-	};
+	interface Props {
+		class?: string;
+	}
+
+	let { class: className }: Props = $props();
+
+	const displayName = (loc: string) =>
+		new Intl.DisplayNames([loc], { type: 'language' }).of(loc) || 'Unknown';
+
 	const context = getContext<UnicoveContext>('state');
-
-	const handleSelect: CreateSelectProps<AvailableLanguageTag>['onSelectedChange'] = ({ next }) => {
-		const base = i18n.route(page.url.pathname);
-		const route = i18n.resolveRoute(base, next?.value);
-		goto(route);
-
+	const handleSelect: CreateSelectProps<string>['onSelectedChange'] = ({ next }) => {
+		if (next?.value) {
+			context.settings.data.locale = next.value;
+		}
 		return next;
 	};
 
+	// melt-ui doesn't seem to like runes, so setting up a writable and effect
+	const selectedLang = writable({
+		value: context.settings.data.locale,
+		label: displayName(context.settings.data.locale)
+	});
+
+	$effect(() => {
+		selectedLang.set({
+			value: context.settings.data.locale,
+			label: displayName(context.settings.data.locale)
+		});
+	});
+
 	const {
 		elements: { trigger, menu, option },
-		states: { open, selectedLabel }
-	} = createSelect<AvailableLanguageTag>({
-		defaultSelected: defaultLang,
+		states: { open }
+	} = createSelect<string>({
+		defaultSelected: $selectedLang,
 		preventScroll: false,
 		positioning: {
 			placement: 'bottom',
@@ -43,12 +54,15 @@
 </script>
 
 <button
-	class="border-outline focus:border-primary flex h-10 items-center justify-between gap-2 rounded-full border-2 bg-transparent py-2 pr-3 pl-4 font-medium transition-opacity hover:opacity-90 focus:outline-none"
+	class={cn(
+		'border-outline focus:border-primary flex h-10 items-center justify-between gap-2 rounded-full border-2 bg-transparent py-2 pr-3 pl-4 font-medium transition-opacity hover:opacity-90 focus:outline-none',
+		className
+	)}
 	use:melt={$trigger}
 	aria-label="langauge-select-label"
 	id="language-select"
 >
-	{$selectedLabel || 'Select a language'}
+	{displayName(context.settings.data.locale)}
 	<ChevronDown class="size-5 transition-transform duration-100 {$open ? 'rotate-180' : ''}" />
 </button>
 
@@ -59,13 +73,13 @@
 		use:melt={$menu}
 		in:fade={{ duration: 100 }}
 	>
-		{#each availableLanguageTags as lang}
+		{#each locales as lang}
 			<li
-				aria-current={lang === languageTag() ? 'page' : undefined}
+				aria-current={lang === context.settings.data.locale ? 'page' : undefined}
 				class=" hover:bg-primary hover:text-on-primary focus:text-on-primary data-highlighted:bg-primary data-highlighted:text-on-primary relative cursor-pointer rounded-xl px-2 py-1 font-medium focus:z-10 data-disabled:opacity-50"
-				use:melt={$option({ value: lang, label: lang })}
+				use:melt={$option({ value: lang, label: displayName(lang) })}
 			>
-				{languageNames[lang as keyof typeof languageNames]}
+				{displayName(lang)}
 			</li>
 		{/each}
 	</ul>

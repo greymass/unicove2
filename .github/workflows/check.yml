@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        chain: ['jungle4', 'kylin', 'vaulta', 'telos', 'telostestnet', 'wax', 'waxtestnet']
+        chain: ['jungle4', 'vaulta', 'telos', 'telostestnet', 'wax', 'waxtestnet']
     runs-on: ubuntu-latest
     name: Check against ${{ matrix.chain }}
     steps:
@@ -18,6 +18,5 @@ jobs:
           fetch-depth: 1
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bun run build-paraglide
       - run: make config/${{ matrix.chain }}
       - run: make check

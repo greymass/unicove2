@@ -1,6 +1,5 @@
 <script lang="ts">
-	import * as m from '$lib/paraglide/messages';
-	import { Stack, Button } from 'unicove-components';
+	import { Stack, Button } from '@wharfkit/svelte-components';
 
 	interface Props {
 		connect: () => Promise<void>;
@@ -11,22 +10,12 @@
 	let { connect, networkName, productName }: Props = $props();
 </script>
 
-<h2 class="text-xl font-semibold">
-	{m.metamask_install_add_to_metamask({
-		name: productName
-	})}
-</h2>
+<h2 class="text-xl font-semibold">Add {productName} to MetaMask</h2>
 <Stack class="mb-1 gap-2">
-	<p class="leading-snug">{m.metamask_install_add_p1()}</p>
+	<p class="leading-snug">It looks like you already have MetaMask installed.</p>
 	<p class="leading-snug">
-		{m.metamask_install_add_p2({
-			name: productName,
-			network: networkName
-		})}
+		To get started with MetaMask on the {networkName} Network, install the {productName} snap using the
+		button below.
 	</p>
 </Stack>
-<Button onclick={connect}
-	>{m.homepage_metamask_wallet_install({
-		name: productName
-	})}</Button
->
+<Button onclick={connect}>Install {productName}</Button>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import CircleX from '@lucide/svelte/icons/circle-x';
-	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
 		error?: string;
@@ -15,7 +14,7 @@
 	<CircleX class="text-error inline size-24" />
 
 	<div class=" space-y-3">
-		<h2 class="text-title">{m.common_transaction_error()}</h2>
+		<h2 class="text-title">Transaction Error</h2>
 
 		<p class="mx-auto max-w-prose break-words">
 			{error}

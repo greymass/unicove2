@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TokenBalance, TokenBalanceChild } from '$lib/types/token';
-	import { Card } from 'unicove-components';
+	import { Card } from '@wharfkit/svelte-components';
 	interface Props {
 		token?: TokenBalance | TokenBalanceChild;
 		title: string;

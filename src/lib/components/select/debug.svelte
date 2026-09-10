@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Switch } from 'unicove-components';
+	import { Switch } from '@wharfkit/svelte-components';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import { getContext } from 'svelte';
 

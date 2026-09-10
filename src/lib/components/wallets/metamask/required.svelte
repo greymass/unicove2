@@ -7,7 +7,7 @@
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import MetaMaskInstall from '$lib/components/wallets/metamask/install.svelte';
 	import Box from '$lib/components/layout/box/box.svelte';
-	import { Button } from 'unicove-components';
+	import { Button } from '@wharfkit/svelte-components';
 
 	const context = getContext<UnicoveContext>('state');
 

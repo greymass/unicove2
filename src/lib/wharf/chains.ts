@@ -1,11 +1,15 @@
 import { Asset, Name, type Checksum256Type, type NameType } from '@wharfkit/antelope';
 import { ChainDefinition, Logo, TokenIdentifier } from '@wharfkit/common';
 
+import { Contract as CreateContract } from '$lib/wharf/contracts/create.gm';
 import { Contract as DelphiHelperContract } from '$lib/wharf/contracts/delphihelper';
 import { Contract as DelphiOracleContract } from '$lib/wharf/contracts/delphioracle';
+import { Contract as ForumContract } from '$lib/wharf/contracts/forum';
+import { Contract as MsgContract } from '$lib/wharf/contracts/msg';
 import { Contract as MSIGContract } from '$lib/wharf/contracts/msig';
 import { Contract as ReserveContract } from '$lib/wharf/contracts/eosio.reserv';
 import { Contract as REXContract } from '$lib/wharf/contracts/eosio.rex';
+import { Contract as SentimentContract } from '$lib/wharf/contracts/sentiment';
 import { Contract as SystemContract } from '$lib/wharf/contracts/system';
 import { Contract as TimeContract } from '$lib/wharf/contracts/eosntime';
 import { Contract as TokenContract } from '$lib/wharf/contracts/token';
@@ -15,7 +19,16 @@ import { Contract as WRAMContract } from '$lib/wharf/contracts/eosio.wram';
 
 import * as env from '$env/static/public';
 
-import { Token, TokenMedia, TokenMediaAsset } from '$lib/types/token';
+// Tolerant lookup for flags not yet declared in every deployment's env files
+const optionalEnv = env as Partial<Record<string, string>>;
+
+import {
+	parseTokenDefinitions,
+	Token,
+	TokenDefinition,
+	TokenMedia,
+	TokenMediaAsset
+} from '$lib/types/token';
 import { isENVTrue } from '$lib/utils/strings';
 
 const coinbase =
@@ -72,6 +85,9 @@ if (env.PUBLIC_SYSTEM_TOKEN_LOGO_DARK) {
 	systemtokenasset.dark = env.PUBLIC_SYSTEM_TOKEN_LOGO_DARK;
 }
 export const systemcontract = Name.from(env.PUBLIC_SYSTEM_CONTRACT);
+export const createcontract = optionalEnv.PUBLIC_FEATURE_CREATE_CONTRACT
+	? Name.from(optionalEnv.PUBLIC_FEATURE_CREATE_CONTRACT)
+	: undefined;
 export const systemtoken = Token.from({
 	id: {
 		chain: env.PUBLIC_CHAIN_ID,
@@ -111,6 +127,11 @@ export const wramtoken = Token.from({
 	})
 });
 
+// Curated token directory; a registry contract can replace this source later
+export const configuredTokens: TokenDefinition[] = parseTokenDefinitions(
+	env.PUBLIC_FEATURE_UNICOVE_CONTRACT_API_TOKENS
+);
+
 export const chainConfig: ChainConfig = {
 	id: env.PUBLIC_CHAIN_ID,
 	short: env.PUBLIC_CHAIN_SHORT,
@@ -126,9 +147,12 @@ export const chainConfig: ChainConfig = {
 	lockedsupply,
 	endpoints: {
 		api: env.PUBLIC_API_CHAIN,
-		history: env.PUBLIC_API_HISTORY
+		history: env.PUBLIC_API_HISTORY,
+		robo2: env.PUBLIC_FEATURE_ROBO2 || undefined
 	},
 	features: {
+		bidname: isENVTrue(env.PUBLIC_FEATURE_BIDNAME),
+		createcontract: !!optionalEnv.PUBLIC_FEATURE_CREATE_CONTRACT,
 		delphihelper: isENVTrue(env.PUBLIC_FEATURE_DELPHIHELPER),
 		delphioracle: isENVTrue(env.PUBLIC_FEATURE_DELPHIORACLE),
 		directfunding: isENVTrue(env.PUBLIC_FEATURE_DIRECTFUNDING),
@@ -139,30 +163,43 @@ export const chainConfig: ChainConfig = {
 		lightapi: isENVTrue(env.PUBLIC_FEATURE_LIGHTAPI),
 		metamask: isENVTrue(env.PUBLIC_FEATURE_METAMASK),
 		powerup: isENVTrue(env.PUBLIC_FEATURE_POWERUP),
+		proposals: isENVTrue(env.PUBLIC_FEATURE_PROPOSALS),
 		rammarket: isENVTrue(env.PUBLIC_FEATURE_RAMMARKET),
 		ramtransfer: isENVTrue(env.PUBLIC_FEATURE_RAMTRANSFER),
 		rentrex: isENVTrue(env.PUBLIC_FEATURE_RENTREX),
 		rex: isENVTrue(env.PUBLIC_FEATURE_REX),
 		robo: isENVTrue(env.PUBLIC_FEATURE_ROBO),
+		robo2: isENVTrue(env.PUBLIC_FEATURE_ROBO2),
+		sentiment: isENVTrue(env.PUBLIC_FEATURE_SENTIMENT),
+		discussion: isENVTrue(optionalEnv.PUBLIC_FEATURE_DISCUSSION),
 		stakeresource: isENVTrue(env.PUBLIC_FEATURE_STAKERESOURCE),
+		statindex: isENVTrue(optionalEnv.PUBLIC_FEATURE_STATINDEX),
 		staking: isENVTrue(env.PUBLIC_FEATURE_STAKING),
 		timeseries: isENVTrue(env.PUBLIC_FEATURE_TIMESERIES),
 		unicovecontractapi: !!env.PUBLIC_FEATURE_UNICOVE_CONTRACT_API,
-		wram: isENVTrue(env.PUBLIC_FEATURE_WRAM)
+		wram: isENVTrue(env.PUBLIC_FEATURE_WRAM),
+		msigapi: isENVTrue(env.PUBLIC_FEATURE_MSIGAPI)
 	},
 	metamask,
-	coinbase
+	coinbase,
+	tokens: configuredTokens,
+	voteDecay: Number(env.PUBLIC_FEATURE_VOTE_DECAY) || 52
 };
 
 export const chains = [chainConfig];
 
 export interface DefaultContracts {
+	create: CreateContract;
 	delphihelper: DelphiHelperContract;
 	delphioracle: DelphiOracleContract;
+	eosio: SystemContract;
 	eosntime: TimeContract;
+	forum: ForumContract;
+	msg: MsgContract;
 	msig: MSIGContract;
 	reserve: ReserveContract;
 	rex: REXContract;
+	sentiment: SentimentContract;
 	system: SystemContract;
 	token: TokenContract;
 	unicove: UnicoveContract;
@@ -172,10 +209,16 @@ export interface DefaultContracts {
 
 export interface ChainEndpoints {
 	api: string;
+	blocks?: string;
 	history: string;
 	hyperion?: string;
 	lightapi?: string;
 	metrics?: string;
+	msg?: string;
+	msigs?: string;
+	robo2?: string;
+	sentiment?: string;
+	statindex?: string;
 }
 
 export interface ChainBackend {
@@ -205,12 +248,16 @@ export interface ChainConfig {
 	lockedsupply?: NameType[]; // Accounts where tokens exist but are not in circulation
 	coinbase?: ChainCoinbaseConfig;
 	metamask?: ChainMetaMaskConfig;
+	tokens: TokenDefinition[];
 	systemcontract: Name;
 	systemtoken: Token;
 	systemtokenalt: Asset.Symbol[];
+	voteDecay: number;
 }
 
 export type FeatureType =
+	| 'bidname'
+	| 'createcontract'
 	| 'delphihelper'
 	| 'delphioracle'
 	| 'directfunding'
@@ -221,16 +268,22 @@ export type FeatureType =
 	| 'lightapi'
 	| 'metamask'
 	| 'powerup'
+	| 'proposals'
 	| 'rammarket'
 	| 'ramtransfer'
 	| 'rentrex'
 	| 'rex'
 	| 'robo'
+	| 'robo2'
+	| 'sentiment'
+	| 'discussion'
 	| 'stakeresource'
 	| 'staking'
+	| 'statindex'
 	| 'timeseries'
 	| 'unicovecontractapi'
-	| 'wram';
+	| 'wram'
+	| 'msigapi';
 
 export function getChainConfigByName(name: string): ChainConfig {
 	const chain = chains.find((c) => c.short === name);
@@ -266,11 +319,6 @@ export function getChainDefinitionFromParams(network: string): ChainDefinition {
 			symbol: config.systemtoken.symbol
 		})
 	});
-}
-
-export const chainShortNames = chains.map((chain) => chain.short) as string[];
-export function isNetworkShortName(value: string) {
-	return chainShortNames.includes(value);
 }
 
 export const chainMap: Record<string, string> = {};

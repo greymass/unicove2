@@ -4,7 +4,7 @@
 
 	import Contract from '$lib/components/elements/contract.svelte';
 	import { parseRootType } from '$lib/utils/abi';
-	import { Table, TD, TH, TR } from 'unicove-components';
+	import { Table, TD, TH, TR } from '@wharfkit/svelte-components';
 
 	interface Props {
 		abi: ABI;

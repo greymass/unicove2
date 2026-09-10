@@ -18,6 +18,7 @@ import type { NetworkState } from './network.svelte';
 import type { SettingsState } from './settings.svelte';
 import { ramtoken } from '$lib/wharf/chains';
 import { calculateValue } from '$lib/utils';
+import { localizePath } from '$lib/utils/url';
 
 export class MarketState {
 	private sources: TokenDataSources = $state() as TokenDataSources;
@@ -54,7 +55,7 @@ export class MarketState {
 	public async refresh() {
 		const basePair = Currencies[this.settings.data.displayCurrency];
 		const encoded = Serializer.encode({ object: basePair });
-		let url = `/${this.network}/api/pairs/${encoded}`;
+		let url = localizePath(`/api/pairs/${encoded}`);
 		if (this.settings.data.mockPrice) {
 			// Allow mock data for prices to be passed for testing
 			url += `?mock=${Asset.fromUnits(12345, basePair.symbol)}`;

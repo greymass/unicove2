@@ -1,54 +1,64 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
-/**
- * Handles the GET request and generates an XML sitemap for the website.
- */
-export const GET: RequestHandler = async ({ request }) => {
-	try {
-		const protocol = import.meta.env.VITE_SITE_PROTOCOL || 'https';
-		const host = request.headers.get('host') || import.meta.env.VITE_SITE_HOST || 'unicove.com';
+import { LOCALES } from '$lib/constants/locales';
+import {
+	hubPaths,
+	proposalEntries,
+	renderSitemap,
+	tokenPaths,
+	topicEntries,
+	type SitemapEntry
+} from '$lib/seo/sitemap';
+import type { NetworkState } from '$lib/state/network.svelte';
+import type { ApiResponse, TopicsListData } from '$lib/types/sentiment';
+import { fetchVpIndex } from '$lib/vp/fetch';
+import { getCacheHeaders } from '$lib/utils';
 
-		// Supported languages and networks
-		const LANGS = ['en', 'zh', 'ko'];
-		const NETWORKS = ['vaulta']; // Add more as needed
-
-		// Pages to include per language-network combination
-		const baseRoutes = ['/', '/send', '/staking', '/ram', '/settings'];
-
-		// Expand routes
-		const pages: string[] = [];
-		for (const lang of LANGS) {
-			for (const network of NETWORKS) {
-				for (const route of baseRoutes) {
-					// Ensure we don’t end up with double slashes like /en/jungle4/
-					const fullPath = route === '/' ? `/${lang}/${network}` : `/${lang}/${network}${route}`;
-					pages.push(fullPath);
-				}
-			}
-		}
-
-		// Construct sitemap XML
-		const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-${pages
-	.map(
-		(page) => `<url>
-  <loc>${protocol}://${host}${page}</loc>
-  <changefreq>weekly</changefreq>
-  <priority>0.7</priority>
-</url>`
-	)
-	.join('\n')}
-</urlset>`;
-
-		return new Response(xmlContent, {
-			headers: {
-				'Content-Type': 'application/xml',
-				'Cache-Control': 'public, max-age=86400' // Cache for 1 day
-			}
-		});
-	} catch (error) {
-		console.error('Error generating sitemap:', error);
-		return new Response('Internal Server Error', { status: 500 });
+function networkTokens(network: NetworkState): { contract: string; symbol: string }[] {
+	const tokens = [network.getSystemToken(), network.getLegacyToken()];
+	if (network.supports('rammarket')) tokens.push(network.getRamToken());
+	if (network.supports('wram')) tokens.push(network.getWRAMToken());
+	const ids = tokens
+		.filter((t) => t !== undefined)
+		.map((t) => ({ contract: String(t.id.contract), symbol: String(t.id.symbol.name) }));
+	for (const token of network.config.tokens) {
+		if (token.contract) ids.push({ contract: String(token.contract), symbol: token.symbol.name });
 	}
+	return ids;
+}
+
+async function topics(network: NetworkState, fetcher: typeof fetch): Promise<SitemapEntry[]> {
+	if (!network.supports('sentiment') || !network.config.endpoints.sentiment) return [];
+	const response = await fetcher(`${network.config.endpoints.sentiment}/v1/topics?limit=500`);
+	if (!response.ok) return [];
+	const result: ApiResponse<TopicsListData> = await response.json();
+	return topicEntries((result.data?.topics ?? []).map((t) => t.topic));
+}
+
+async function proposals(network: NetworkState, fetcher: typeof fetch): Promise<SitemapEntry[]> {
+	if (!network.supports('proposals')) return [];
+	const index = await fetchVpIndex(fetcher);
+	return proposalEntries(index.proposals);
+}
+
+// A failing dynamic section drops out rather than breaking the whole sitemap.
+async function section(name: string, load: () => Promise<SitemapEntry[]>): Promise<SitemapEntry[]> {
+	try {
+		return await load();
+	} catch (e) {
+		console.error(`sitemap: ${name} section failed`, e);
+		return [];
+	}
+}
+
+export const GET: RequestHandler = async ({ fetch, locals: { network }, url }) => {
+	const entries: SitemapEntry[] = [
+		...hubPaths(network).map((path) => ({ path })),
+		...tokenPaths(networkTokens(network)).map((path) => ({ path })),
+		...(await section('proposals', () => proposals(network, fetch))),
+		...(await section('topics', () => topics(network, fetch)))
+	];
+	return new Response(renderSitemap(url.origin, network.config.short, LOCALES, entries), {
+		headers: { 'Content-Type': 'application/xml', ...getCacheHeaders(86400) }
+	});
 };

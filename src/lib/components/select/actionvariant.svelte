@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import type { ActionDisplayVariants } from '$lib/types';
-	import { Button, Switcher } from 'unicove-components';
+	import { Button, Switcher } from '@wharfkit/svelte-components';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 
 	const context = getContext<UnicoveContext>('state');
@@ -13,35 +13,51 @@
 	}
 </script>
 
-{#if context.settings.data.advancedMode}
-	<Switcher>
+<Switcher>
+	<Button
+		variant={current !== 'summary' ? 'secondary' : 'primary'}
+		active={current === 'summary'}
+		onclick={() => set('summary')}
+	>
+		Summary
+	</Button>
+	<Button
+		variant={current !== 'table' ? 'secondary' : 'primary'}
+		active={current === 'table'}
+		onclick={() => set('table')}
+	>
+		Table
+	</Button>
+	{#if context.settings.data.debugMode}
 		<Button
-			variant={current !== 'summary' ? 'secondary' : 'primary'}
-			onclick={() => set('summary')}
+			variant={current !== 'ricardian' ? 'secondary' : 'primary'}
+			active={current === 'ricardian'}
+			onclick={() => set('ricardian')}
 		>
-			Summary
+			Ricardian
 		</Button>
-		{#if context.settings.data.debugMode}
-			<Button
-				variant={current !== 'ricardian' ? 'secondary' : 'primary'}
-				onclick={() => set('ricardian')}
-			>
-				Ricardian
-			</Button>
-		{/if}
-		<Button variant={current !== 'pretty' ? 'secondary' : 'primary'} onclick={() => set('pretty')}>
-			Action Data
+	{/if}
+	<Button
+		variant={current !== 'pretty' ? 'secondary' : 'primary'}
+		active={current === 'pretty'}
+		onclick={() => set('pretty')}
+	>
+		Action Data
+	</Button>
+	{#if context.settings.data.developerMode}
+		<Button
+			variant={current !== 'decoded' ? 'secondary' : 'primary'}
+			active={current === 'decoded'}
+			onclick={() => set('decoded')}
+		>
+			Decoded
 		</Button>
-		{#if context.settings.data.developerMode}
-			<Button
-				variant={current !== 'decoded' ? 'secondary' : 'primary'}
-				onclick={() => set('decoded')}
-			>
-				Decoded
-			</Button>
-			<Button variant={current !== 'json' ? 'secondary' : 'primary'} onclick={() => set('json')}>
-				JSON
-			</Button>
-		{/if}
-	</Switcher>
-{/if}
+		<Button
+			variant={current !== 'json' ? 'secondary' : 'primary'}
+			active={current === 'json'}
+			onclick={() => set('json')}
+		>
+			JSON
+		</Button>
+	{/if}
+</Switcher>

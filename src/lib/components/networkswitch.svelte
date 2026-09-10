@@ -8,9 +8,8 @@
 	import { createSelect, melt, type CreateSelectProps } from '@melt-ui/svelte';
 	import { fade } from 'svelte/transition';
 	import { chainMap } from '$lib/wharf/chains';
-	import { goto } from '$lib/utils';
 	import type { NetworkState } from '$lib/state/network.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		currentNetwork: NetworkState;
@@ -58,13 +57,11 @@
 <button
 	id="network-switcher"
 	class={cn(
-		'focus:bg-surface-container flex items-center gap-3 rounded-2xl px-4  py-3.5 focus:outline-hidden',
-		!!context.settings.data.advancedMode && 'hover:bg-transparent',
+		'focus:bg-surface-container flex items-center gap-3 rounded-2xl px-4  py-3.5 hover:bg-transparent focus:outline-hidden',
 		className
 	)}
 	use:melt={$trigger}
 	{...props}
-	disabled={!context.settings.data.advancedMode}
 >
 	<picture class="flex size-10 justify-center">
 		{#if logo}
@@ -83,9 +80,9 @@
 			>{currentNetwork.chain.name}</span
 		>
 
-		{#if options.length > 1 && context.settings.data.advancedMode}
+		{#if options.length > 1}
 			<div class="font-regular text-muted m-0 flex items-center gap-1 pr-1 text-base">
-				<span use:melt={$label}>{m.change_network()}</span>
+				<span use:melt={$label}>Change network</span>
 				<ChevronDown
 					data-open={$open}
 					class="size-4 transition-transform duration-100 data-[open=true]:rotate-180"

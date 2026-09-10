@@ -1,11 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import '$lib/utils/dayjs'; // setup dayjs
-	import { ParaglideJS } from '@inlang/paraglide-sveltekit';
-	import { PlausibleAnalytics } from '@accuser/svelte-plausible-analytics';
-	import { PUBLIC_ENVIRONMENT, PUBLIC_ANALYTICS_DOMAIN } from '$env/static/public';
+	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
 
-	import { i18n } from '$lib/i18n';
 	import Toaster from '$lib/components/toast/toaster.svelte';
 
 	let { children } = $props();
@@ -19,10 +16,4 @@
 
 <Toaster />
 
-<ParaglideJS {i18n}>
-	{@render children()}
-</ParaglideJS>
-
-{#if PUBLIC_ENVIRONMENT === 'production'}
-	<PlausibleAnalytics apiHost="https://stats.greymass.com" domain={PUBLIC_ANALYTICS_DOMAIN} />
-{/if}
+{@render children?.()}

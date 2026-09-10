@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { Stack, Card } from 'unicove-components';
+	import { Stack, Card } from '@wharfkit/svelte-components';
 	import AssetText from '$lib/components/elements/asset.svelte';
 	import { Asset } from '@wharfkit/antelope';
 	import TradingPair from '$lib/components/elements/tradingpair.svelte';
-	import { Chip } from 'unicove-components';
+	import { Chip } from '@wharfkit/svelte-components';
 	import { Breakdown, BreakdownRow } from '$lib/components/breakdown';
-	import * as m from '$lib/paraglide/messages';
 	import type { NetworkState } from '$lib/state/network.svelte';
 	import { tokenEquals, ZeroUnits, type TokenBalance, type TokenPair } from '$lib/types/token';
-	import { Button } from 'unicove-components';
+	import { Button } from '@wharfkit/svelte-components';
+	import type { UnicoveContext } from '$lib/state/client.svelte';
+	import { getContext } from 'svelte';
+
+	const { urlPath } = getContext<UnicoveContext>('state');
 
 	interface TokenOverviewProps {
 		balance: TokenBalance;
@@ -46,11 +49,11 @@
 <Card id="{balance.token.contract}-{balance.token.symbol.name}-token" class={className}>
 	<div class="card-title h4">
 		{#if isRamToken}
-			<a href="/{network}/ram">
+			<a href={urlPath('/ram')}>
 				{balance.token.symbol.name} (RAM)
 			</a>
 		{:else}
-			<a href="/{network}/token/{balance.token.contract}/{balance.token.name}">
+			<a href={urlPath(`/token/${balance.token.contract}/${balance.token.name}`)}>
 				{balance.token.symbol.name}
 			</a>
 		{/if}
@@ -64,7 +67,7 @@
 					class="col-start-1 col-end-3 row-start-1 flex flex-col py-2 @xs:flex-row @xs:justify-between"
 				>
 					<Stack class="gap-2">
-						<h4 class="text-muted text-base leading-none">{m.common_value()}</h4>
+						<h4 class="text-muted text-base leading-none">Value</h4>
 						<p class="text-on-surface text-xl leading-none font-semibold">
 							{#if value.units.gt(ZeroUnits)}
 								<AssetText variant="full" {value} />
@@ -86,9 +89,7 @@
 
 				{#if network.supports('directfunding') && tokenEquals(balance.token.id, network.getSystemToken().id) && isCurrentUser}
 					<div class="col-span-2 col-start-2 row-start-1 text-right @xs:col-span-1 @xs:col-start-3">
-						<Button href={`/${network}/fund`}>
-							{m.common_add_funds()}
-						</Button>
+						<Button href={urlPath(`/fund`)}>Add Funds</Button>
 					</div>
 				{/if}
 			</div>
@@ -96,12 +97,12 @@
 
 		<Breakdown {isCurrentUser}>
 			<BreakdownRow
-				key={m.common_available()}
+				key="Available"
 				value={balance.balance}
 				action={!balance.locked
 					? {
-							text: m.common_send(),
-							href: `/${network}/send/${balance.token.id.url}`,
+							text: 'Send',
+							href: urlPath(`/send/${balance.token.id.url}`),
 							visible: isCurrentUser
 						}
 					: undefined}
@@ -110,11 +111,11 @@
 			{#if tokenEquals(balance.token.id, network.token.id)}
 				{#if network.supports('staking')}
 					<BreakdownRow
-						key={m.common_staked()}
+						key="Staked"
 						value={balanceStaked.balance}
 						action={{
-							text: m.common_staking(),
-							href: `/${network}/staking`,
+							text: 'Staking',
+							href: urlPath(`/staking`),
 							visible: isCurrentUser
 						}}
 					/>
@@ -122,11 +123,11 @@
 
 				{#if balanceUnstaked && balanceUnstaked.balance.value > 0}
 					<BreakdownRow
-						key={m.common_unstaked()}
+						key="Unstaked"
 						value={balanceUnstaked.balance}
 						action={{
-							text: m.common_withdraw(),
-							href: `/${network}/staking/withdraw`,
+							text: 'Withdraw',
+							href: urlPath(`/staking/withdraw`),
 							visible: isCurrentUser
 						}}
 					/>
@@ -134,11 +135,11 @@
 
 				{#if balanceDelegated && balanceDelegated.balance.value > 0}
 					<BreakdownRow
-						key={m.common_delegated()}
+						key="Delegated"
 						value={balanceDelegated.balance}
 						action={{
-							text: m.common_reclaim(),
-							href: `/${network}/undelegate`,
+							text: 'Reclaim',
+							href: urlPath(`/undelegate`),
 							visible: isCurrentUser
 						}}
 					/>
@@ -146,11 +147,11 @@
 
 				{#if balanceRefunding && balanceRefunding.balance.value > 0}
 					<BreakdownRow
-						key={m.common_refunding()}
+						key="Refunding"
 						value={balanceRefunding.balance}
 						action={{
-							text: m.common_claim(),
-							href: `/${network}/refund`,
+							text: 'Claim',
+							href: urlPath(`/refund`),
 							visible: isCurrentUser
 						}}
 					/>
@@ -158,7 +159,7 @@
 			{/if}
 
 			{#if balanceTotal && balanceTotal.balance.value > 0}
-				<BreakdownRow key={m.common_total()} value={balanceTotal.balance} />
+				<BreakdownRow key="Total" value={balanceTotal.balance} />
 			{/if}
 		</Breakdown>
 

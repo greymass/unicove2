@@ -2,6 +2,6 @@
 	let props = $props();
 </script>
 
-<div class="grid gap-y-4 @2xl:grid-cols-[auto_auto_1fr]">
+<div class="flex flex-col gap-1">
 	{@render props.children()}
 </div>

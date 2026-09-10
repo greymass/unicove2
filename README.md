@@ -24,16 +24,16 @@ The `make check` command will run through Svelte checks, eslint, and prettier. A
 
 The `.env` file contains the default configuration for Unicove running the Jungle 4 testnet. This file shouldn't be modified for local changes, and instead a `.env.development` file should be created to selectively override the defaults in the `.env`.
 
-A number of complete chain configurations are available in the `./configs` directory. These configs can be loaded in using one of the Makefile config commands (e.g. `make config/eos`). This will copy the configuration for a specific chain and paste it into `.env.local` to override the defaults in the `.env` file.
+A number of complete chain configurations are available in the `./configs` directory. These configs can be loaded in using one of the Makefile config commands (e.g. `make config/vaulta`). This will copy the configuration for a specific chain and paste it into `.env.local` to override the defaults in the `.env` file.
 
 Available configuration commands:
 
 ```
-make config/eos
 make config/jungle4
 make config/kylin
 make config/telos
 make config/telostestnet
+make config/vaulta
 make config/wax
 make config/waxtestnet
 ```

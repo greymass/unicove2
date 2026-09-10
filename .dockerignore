@@ -11,7 +11,6 @@ docker-compose*
 .svelte-kit
 .wrangler
 README.md
-src/lib/paraglide
 LICENSE
 .vscode
 helm-charts

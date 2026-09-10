@@ -18,7 +18,7 @@
 		if (context.network.supports('timeseries')) {
 			try {
 				const response = await context.network.fetch(
-					`/${context.network}/api/metrics/marketprice/token`
+					context.urlPath(`/api/metrics/marketprice/token`)
 				);
 				const parsedTokenResponse: APIResponse = await response.json();
 
@@ -45,15 +45,12 @@
 					return converted;
 				} else if ('error' in parsedTokenResponse && parsedTokenResponse.error) {
 					throw new Error(String(parsedTokenResponse.error));
-				} else {
-					throw new Error('Error fetching RAM prices');
 				}
 			} catch (e) {
-				throw new Error(String(e));
+				console.warn('Token price history unavailable', e);
 			}
-		} else {
-			return [];
 		}
+		return [];
 	};
 
 	let systemtoken = Asset.Symbol.from(context.network.config.systemtoken.symbol);

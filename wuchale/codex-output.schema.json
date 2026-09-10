@@ -1,0 +1,10 @@
+{
+	"additionalProperties": false,
+	"properties": {
+		"output": {
+			"type": "string"
+		}
+	},
+	"required": ["output"],
+	"type": "object"
+}

@@ -1,10 +1,9 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
-	import { Card } from 'unicove-components';
-	import { Select, type ExtendedSelectOption } from 'unicove-components';
+	import { Card } from '@wharfkit/svelte-components';
+	import { Select, type ExtendedSelectOption } from '@wharfkit/svelte-components';
 	import type { HistoricalPrice } from '$lib/types';
 	import LineChart from './line-chart.svelte';
-	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
 		pair: string;
@@ -89,6 +88,6 @@
 
 	<div class="flex items-center justify-between">
 		<span class="text-muted text-sm">{startDate}</span>
-		<span class="text-muted text-sm">{m.common_today()}</span>
+		<span class="text-muted text-sm">Today</span>
 	</div>
 </Card>

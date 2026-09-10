@@ -1,19 +1,10 @@
 <script lang="ts">
-	import {
-		AppWindow,
-		ArrowLeftRight,
-		Box,
-		Boxes,
-		Key,
-		ReceiptText,
-		UserSearch
-	} from '@lucide/svelte';
-	import type { ComponentProps, Snippet } from 'svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { type ComponentProps, type Snippet } from 'svelte';
+	import type { TextInput } from '@wharfkit/svelte-components';
 
-	import { SearchRecordType, type SearchRecord } from '$lib/state/search.svelte';
-	import { cn, truncateCenter } from '$lib/utils';
-	import type { TextInput } from 'unicove-components';
+	import { defaultRegistry } from '$lib/state/search';
+	import type { SearchRecord } from '$lib/state/search';
+	import { cn } from '$lib/utils';
 
 	interface ResultProps extends ComponentProps<typeof TextInput> {
 		record: SearchRecord;
@@ -23,6 +14,40 @@
 	}
 
 	let { record, onclick, active, children, ...props }: ResultProps = $props();
+
+	// Get the plugin for this record type to access UI configuration
+	const plugin = $derived(defaultRegistry.getResultPlugin(record.type));
+
+	// Determine icon to display
+	const Icon = $derived(plugin?.ui.icon);
+
+	// Format the value using plugin's formatter or default
+	const displayValue = $derived.by(() => {
+		if (plugin?.ui.formatValue) {
+			return plugin.ui.formatValue(record);
+		}
+		return record.value;
+	});
+
+	// Format the description using plugin's formatter or default
+	const displayDescription = $derived.by(() => {
+		if (plugin?.ui.formatDescription) {
+			return plugin.ui.formatDescription(record);
+		}
+		if (record.description) {
+			return record.description;
+		}
+		return `View ${record.type}`;
+	});
+
+	// Determine if value should be truncated
+	const shouldTruncate = $derived(plugin?.ui.truncate);
+	const truncateClass = $derived.by(() => {
+		if (!shouldTruncate) return '';
+		if (shouldTruncate === 'center') return '';
+		if (typeof shouldTruncate === 'number') return `max-w-[${shouldTruncate}ch] truncate`;
+		return 'truncate';
+	});
 </script>
 
 <a
@@ -34,44 +59,20 @@
 	href={record.url}
 	{onclick}
 >
-	<div class="table-cell-styles ml-2 flex items-center gap-2 font-mono tabular-nums">
-		{#if record.type === SearchRecordType.ACCOUNT}
-			<UserSearch class="size-4" />
-			<span>{record.value}</span>
-		{:else if record.type === SearchRecordType.BLOCK}
-			<Box class="size-4" />
-			<span>{record.value}</span>
-		{:else if record.type === SearchRecordType.CONTRACT}
-			<ReceiptText class="size-4" />
-			<span>{record.value}</span>
-		{:else if record.type === SearchRecordType.KEY}
-			<Key class="size-4" />
-			<span class="max-w-[12ch] truncate">
-				{record.value}
-			</span>
-		{:else if record.type === SearchRecordType.SWITCH}
-			<ArrowLeftRight class="size-4" />
-			<span>{record.value}</span>
-		{:else if record.type === SearchRecordType.TRANSACTION}
-			<Boxes class="size-4" />
-			<span class="max-w-[13ch] truncate">
-				{truncateCenter(record.value)}
-			</span>
-		{:else}
-			<AppWindow class="size-4" />
-			<span>{record.value}</span>
+	<div class="ml-2 flex items-center gap-2 font-mono text-nowrap tabular-nums">
+		{#if Icon}
+			<Icon class="size-4" />
 		{/if}
+		<span class={truncateClass}>
+			{displayValue}
+		</span>
 	</div>
 
 	<span
 		data-active={active}
 		class="align-center truncate pr-2 text-right text-base font-medium text-nowrap text-inherit capitalize sm:block sm:pr-0 sm:text-left"
 	>
-		{#if record.description}
-			{record.description}
-		{:else}
-			{m.search_view_type({ type: record.type })}
-		{/if}
+		{displayDescription}
 	</span>
 
 	{@render children?.()}

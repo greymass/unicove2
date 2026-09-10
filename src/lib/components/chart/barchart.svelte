@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Chart } from 'chart.js';
 	import 'chart.js/auto';
-	import { Card } from 'unicove-components';
-	import * as m from '$lib/paraglide/messages';
+	import { Card } from '@wharfkit/svelte-components';
 
 	interface Props {
 		data: { x: number; y: number; y1?: number }[];
@@ -21,13 +20,13 @@
 				labels: data.map((_, i) => i + 1),
 				datasets: [
 					{
-						label: m.common_staked(),
+						label: 'Staked',
 						data: data.map((d) => d.y),
 						backgroundColor: '#00ED97',
 						borderRadius: 4
 					},
 					{
-						label: m.common_yield(),
+						label: 'Yield',
 						data: data.map((d) => d.y1),
 						backgroundColor: '#B2FAE0',
 						borderRadius: 4
@@ -75,13 +74,13 @@
 		<div class="flex gap-4">
 			<div class="flex items-center gap-1">
 				<div class="size-4 rounded-sm bg-[#00ED97]"></div>
-				<span class="text-[#00ED97]">{m.common_staked()}</span>
+				<span class="text-[#00ED97]">Staked</span>
 			</div>
 			<div class="flex items-center gap-1">
 				<div class="size-4 rounded-sm bg-[#B2FAE0]"></div>
-				<span class="text-[#B2FAE0]">{m.common_yield()}</span>
+				<span class="text-[#B2FAE0]">Yield</span>
 			</div>
 		</div>
-		<span class="text-muted">{m.common_today()}</span>
+		<span class="text-muted">Today</span>
 	</div>
 </Card>

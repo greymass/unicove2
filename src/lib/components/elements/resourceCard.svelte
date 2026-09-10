@@ -5,8 +5,7 @@
 	import Wifi from '@lucide/svelte/icons/wifi';
 	import HardDrive from '@lucide/svelte/icons/hard-drive';
 
-	import * as m from '$lib/paraglide/messages';
-	import { Number as NumberFormat } from 'unicove-components';
+	import { Number as NumberFormat } from '@wharfkit/svelte-components';
 
 	interface Props {
 		type: keyof typeof resourceMap;
@@ -60,6 +59,6 @@
 			<NumberFormat number={props.value.dividing(1000)} />
 			{unit}
 		</span>
-		<span>{m.common_available()}</span>
+		<span>Available</span>
 	</p>
 </div>

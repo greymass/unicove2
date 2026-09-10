@@ -13,17 +13,6 @@ export namespace Types {
 		@Struct.field('string')
 		declare memo: string;
 	}
-	@Struct.type('giftram')
-	export class giftram extends Struct {
-		@Struct.field(Name)
-		declare from: Name;
-		@Struct.field(Name)
-		declare receiver: Name;
-		@Struct.field(Int64)
-		declare ram_bytes: Int64;
-		@Struct.field('string')
-		declare memo: string;
-	}
 	@Struct.type('logbuyram')
 	export class logbuyram extends Struct {
 		@Struct.field(Name)

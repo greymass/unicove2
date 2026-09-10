@@ -4,7 +4,7 @@
 
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 
-	import { Code, Table, TD, TH, TR } from 'unicove-components';
+	import { Code, Table, TD, TH, TR } from '@wharfkit/svelte-components';
 
 	import Database from '@lucide/svelte/icons/database';
 	import Contract from '../elements/contract.svelte';

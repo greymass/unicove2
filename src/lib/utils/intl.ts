@@ -1,4 +1,7 @@
 import type { Int } from '@wharfkit/antelope';
+import { browser } from '$app/environment';
+import { loadLocale } from 'wuchale/load-utils';
+import { locales } from 'virtual:wuchale/locales';
 
 const defaultDateOptions: Intl.DateTimeFormatOptions = {
 	dateStyle: 'short',
@@ -41,4 +44,13 @@ export function formatDateTime(
 		...defaultDateOptions,
 		...options
 	}).format(datetime);
+}
+
+/**
+ * Load wuchale locale in nested layout.ts load functions
+ */
+export async function useLocale(locale?: string) {
+	if (browser && locale && locales.includes(locale)) {
+		await loadLocale(locale);
+	}
 }

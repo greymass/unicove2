@@ -1,0 +1,137 @@
+{
+	"generated": "2026-08-09T16:15:11.530Z",
+	"proposals": [
+		{
+			"vp": "VP-0001",
+			"title": "Network RAM Endowment for Account Onboarding",
+			"standard": "VPS-1",
+			"status": "Draft",
+			"authors": [
+				"Aaron Cox (Greymass)"
+			],
+			"created": "2026-08-02",
+			"accounts": [
+				"ram.vaulta",
+				"admin.grants",
+				"fund.wram",
+				"eosio.wrap",
+				"eosio"
+			],
+			"msigs": [],
+			"sentiment": [],
+			"requires": [],
+			"slug": "vp-0001-ram-gifting",
+			"path": "proposals/vp-0001-ram-gifting/proposal.md",
+			"excerpt": "A network-owned account (ram.vaulta) holds a RAM endowment.",
+			"updated": "2026-08-09",
+			"translations": [
+				{
+					"lang": "ko",
+					"path": "proposals/vp-0001-ram-gifting/proposal.ko.md",
+					"current": true,
+					"title": "계정 온보딩을 위한 네트워크 RAM 기금",
+					"excerpt": "네트워크 소유 계정은 RAM 기금을 보유합니다."
+				},
+				{
+					"lang": "zh",
+					"path": "proposals/vp-0001-ram-gifting/proposal.zh.md",
+					"current": true
+				}
+			]
+		},
+		{
+			"vp": "VP-0002",
+			"title": "Self-Serve Account Creation",
+			"standard": "VPS-1",
+			"status": "Draft",
+			"authors": [
+				"Aaron Cox (Greymass)"
+			],
+			"created": "2026-02-16",
+			"accounts": [
+				"new.vaulta",
+				"eosio",
+				"eosio.prods",
+				"core.vaulta",
+				"admin.grants",
+				"fund.wram"
+			],
+			"msigs": [],
+			"sentiment": [],
+			"requires": [],
+			"slug": "vp-0002-account-creation",
+			"path": "proposals/vp-0002-account-creation/proposal.md",
+			"updated": "2026-08-09",
+			"translations": [
+				{
+					"lang": "ko",
+					"path": "proposals/vp-0002-account-creation/proposal.ko.md",
+					"current": true
+				},
+				{
+					"lang": "zh",
+					"path": "proposals/vp-0002-account-creation/proposal.zh.md",
+					"current": true
+				}
+			]
+		},
+		{
+			"vp": "VP-0003",
+			"title": "Network Steering Committee, RFP Framework Approval, and On-Chain Program Funding",
+			"standard": "VPS-1",
+			"status": "Draft",
+			"authors": [
+				"Adam Zientarski (VST)"
+			],
+			"created": "2026-09-01",
+			"accounts": [
+				"rfp.vst",
+				"disc.vst",
+				"eosio.prods",
+				"delphioracle"
+			],
+			"msigs": [],
+			"sentiment": [],
+			"requires": [],
+			"slug": "vp-0003-rfp-program",
+			"path": "proposals/vp-0003-rfp-program/proposal.md",
+			"updated": "2026-09-01",
+			"excerpt": "This proposal asks block producers to approve the Vaulta Network RFP Framework, continue the Oversight Committee as an expanded Network Steering Committee with a mandate to decide RFP funding, and authorize an on-chain program fund under limits that block producers keep. It consists of three documents, distributed for review by the VST and block producers and carried here verbatim.",
+			"translations": [
+				{
+					"lang": "ko",
+					"path": "proposals/vp-0003-rfp-program/proposal.ko.md",
+					"current": true,
+					"title": "네트워크 운영 위원회, RFP 프레임워크 승인 및 온체인 프로그램 자금 조달",
+					"excerpt": "이 제안은 블록 프로듀서에게 Vaulta 네트워크 RFP 프레임워크를 승인하고, 감독 위원회(Oversight Committee)를 RFP 자금 결정 권한을 가진 확대된 네트워크 운영 위원회(Network Steering Committee)로 이어가며, 블록 프로듀서가 유지하는 한도 내에서 온체인 프로그램 기금을 승인할 것을 요청합니다. 이 제안은 VST와 블록 프로듀서의 검토를 위해 배포된 세 개의 문서로 구성되며, 원문 그대로 수록되어 있습니다.",
+					"msigs": []
+				},
+				{
+					"lang": "zh",
+					"path": "proposals/vp-0003-rfp-program/proposal.zh.md",
+					"current": true,
+					"title": "网络指导委员会、RFP 框架批准与链上项目资金",
+					"excerpt": "本提案请求区块生产者批准 Vaulta 网络 RFP 框架，将监督委员会（Oversight Committee）延续为经扩充、拥有 RFP 资金决定授权的网络指导委员会（Network Steering Committee），并在区块生产者保留的限额之内批准一笔链上项目资金。本提案由三份文件组成，这些文件为 VST 与区块生产者的审阅而分发，并在此原文收录。",
+					"msigs": []
+				}
+			],
+			"documents": [
+				{
+					"path": "proposals/vp-0003-rfp-program/documents/msig-5.md",
+					"heading": "MSIG #5 — Network Steering Committee, RFP Framework, Program Funding",
+					"translations": []
+				},
+				{
+					"path": "proposals/vp-0003-rfp-program/documents/rfp-framework.md",
+					"heading": "Vaulta Network RFP Framework",
+					"translations": []
+				},
+				{
+					"path": "proposals/vp-0003-rfp-program/documents/rfp-platform-prd.md",
+					"heading": "Vaulta RFP Platform — Product Requirements & Gap Analysis",
+					"translations": []
+				}
+			]
+		}
+	]
+}

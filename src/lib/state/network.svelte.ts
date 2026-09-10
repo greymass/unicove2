@@ -13,6 +13,7 @@ import {
 import { ChainDefinition } from '@wharfkit/common';
 import { RAMState, Resources as ResourceClient, REXState, PowerUpState } from '@wharfkit/resources';
 import { ABICache } from '@wharfkit/abicache';
+import { MsigsClient } from '@wharfkit/msigs';
 
 import {
 	NetworkDataSources,
@@ -23,6 +24,7 @@ import {
 } from '$lib/types/network';
 
 import {
+	createcontract,
 	getChainDefinitionFromParams,
 	type ChainConfig,
 	type DefaultContracts,
@@ -36,11 +38,15 @@ import {
 
 import { Token, ZeroUnits, TokenDefinition, tokenEquals } from '$lib/types/token';
 
+import { Contract as CreateContract } from '$lib/wharf/contracts/create.gm';
 import { Contract as DelphiHelperContract } from '$lib/wharf/contracts/delphihelper';
 import { Contract as DelphiOracleContract } from '$lib/wharf/contracts/delphioracle';
+import { Contract as ForumContract } from '$lib/wharf/contracts/forum';
+import { Contract as MsgContract } from '$lib/wharf/contracts/msg';
 import { Contract as MSIGContract } from '$lib/wharf/contracts/msig';
 import { Contract as ReserveContract } from '$lib/wharf/contracts/eosio.reserv';
 import { Contract as REXContract } from '$lib/wharf/contracts/eosio.rex';
+import { Contract as SentimentContract } from '$lib/wharf/contracts/sentiment';
 import { Contract as SystemContract } from '$lib/wharf/contracts/system';
 import { Contract as TimeContract } from '$lib/wharf/contracts/eosntime';
 import { Contract as TokenContract } from '$lib/wharf/contracts/token';
@@ -52,8 +58,13 @@ import type { ObjectifiedActionData } from '$lib/types/transaction';
 import {
 	PUBLIC_FEATURE_METAMASK_SNAP_ORIGIN,
 	PUBLIC_FEATURE_UNICOVE_CONTRACT_API,
-	PUBLIC_FEATURE_VAULTA_CORE_CONTRACT
+	PUBLIC_FEATURE_VAULTA_CORE_CONTRACT,
+	PUBLIC_FEATURE_SENTIMENT_CONTRACT,
+	PUBLIC_FEATURE_DISCUSSION_CONTRACT,
+	PUBLIC_SYSTEM_TOKEN_CONTRACT
 } from '$env/static/public';
+import { localizePath } from '$lib/utils/url';
+import { forumAccountFor } from '$lib/msg/model';
 
 export class NetworkState {
 	// Readonly state
@@ -62,6 +73,7 @@ export class NetworkState {
 	readonly config: ChainConfig;
 	readonly contracts: DefaultContracts;
 	readonly fetch = fetch;
+	readonly msigs: MsigsClient;
 	readonly snapOrigin?: string;
 	readonly resourceClient: ResourceClient;
 
@@ -109,12 +121,26 @@ export class NetworkState {
 			sampleAccount: 'eosio.reserv',
 			symbol: String(this.config.systemtoken.symbol)
 		});
+		this.msigs = new MsigsClient(this.client);
 		this.connection.endpoint = (this.client.provider as FetchProvider).url;
 
 		this.contracts = {
+			create: new CreateContract({
+				account: createcontract,
+				client: this.client
+			}),
 			delphihelper: new DelphiHelperContract({ client: this.client }),
 			delphioracle: new DelphiOracleContract({ client: this.client }),
+			eosio: new SystemContract({ account: 'eosio', client: this.client }),
 			eosntime: new TimeContract({ client: this.client }),
+			forum: new ForumContract({
+				account: forumAccountFor(PUBLIC_FEATURE_DISCUSSION_CONTRACT),
+				client: this.client
+			}),
+			msg: new MsgContract({
+				account: PUBLIC_FEATURE_DISCUSSION_CONTRACT,
+				client: this.client
+			}),
 			msig: new MSIGContract({ client: this.client }),
 			reserve: new ReserveContract({
 				client: this.client
@@ -122,11 +148,15 @@ export class NetworkState {
 			rex: new REXContract({
 				client: this.client
 			}),
+			sentiment: new SentimentContract({
+				account: PUBLIC_FEATURE_SENTIMENT_CONTRACT,
+				client: this.client
+			}),
 			system: new SystemContract({
 				account: this.config.systemcontract,
 				client: this.client
 			}),
-			token: new TokenContract({ client: this.client }),
+			token: new TokenContract({ account: PUBLIC_SYSTEM_TOKEN_CONTRACT, client: this.client }),
 			unicove: new UnicoveContract({
 				account: PUBLIC_FEATURE_UNICOVE_CONTRACT_API,
 				client: this.client
@@ -168,7 +198,7 @@ export class NetworkState {
 	}
 
 	public async refresh() {
-		const response = await this.fetch(`/${this}/api/network`);
+		const response = await this.fetch(localizePath(`/api/network`));
 		this.connection.updated = new Date();
 		if (response.ok) {
 			this.connection.connected = true;
@@ -268,6 +298,12 @@ export class NetworkState {
 		}
 		const asset = Asset.from(rex);
 		const { total_lendable, total_rex } = this.rex;
+
+		// Handle edge case where REX pool is empty (division by zero)
+		if (total_rex.units.equals(0)) {
+			return Asset.fromUnits(0, total_lendable.symbol);
+		}
+
 		const R1 = total_rex.units.adding(asset.units);
 		const S1 = Int128.from(R1).multiplying(total_lendable.units).dividing(total_rex.units);
 		const result = S1.subtracting(total_lendable.units);
@@ -286,8 +322,8 @@ export class NetworkState {
 		}
 		const powerup = PowerUpState.from(this.sources?.powerup);
 		return [
-			powerup.cpu.frac_by_ms(this.sources.sample, cpu),
-			powerup.net.frac_by_kb(this.sources.sample, net)
+			Number(powerup.cpu.frac_by_ms(this.sources.sample, cpu)),
+			Number(powerup.net.frac_by_kb(this.sources.sample, net))
 		];
 	};
 
@@ -386,9 +422,10 @@ export class NetworkState {
 
 	async decodeAction(action: Action): Promise<ABISerializable> {
 		const abi = await this.abis?.getAbi(action.account);
+		const type = abi?.getActionType(action.name) || String(action.name);
 		return Serializer.decode({
 			data: action.data,
-			type: String(action.name),
+			type,
 			abi: abi
 		});
 	}

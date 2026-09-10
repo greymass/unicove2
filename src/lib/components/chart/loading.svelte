@@ -1,5 +1,5 @@
 <script>
-	import { Card } from 'unicove-components';
+	import { Card } from '@wharfkit/svelte-components';
 
 	const props = $props();
 </script>

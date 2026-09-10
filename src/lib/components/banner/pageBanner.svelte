@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import X from '@lucide/svelte/icons/x';
-	import * as m from '$lib/paraglide/messages';
 	import dayjs from 'dayjs';
 
 	let props = $props();
@@ -59,8 +58,8 @@
 					d="M237.164 37.103H188.829C186.932 37.103 185.11 37.861 183.768 39.209L72.461 151.009H0V43.338L43.097 0.0019989V120.027H49.255L161.725 7.058C166.225 2.538 172.326 0 178.688 0H237.164V37.105V37.103ZM356.368 0H283.905L172.6 111.798C171.258 113.146 169.436 113.903 167.539 113.903H119.204V151.007H177.629C184.024 151.007 190.157 148.457 194.677 143.914L307.111 30.984H313.269V132.394H243.83V151.009H313.269L319.666 144.577L325.631 138.579L356.368 107.673V0Z"
 					fill="white"
 				/>
-			</svg><span class="font-semibold">{m.common_breaking_news()}:</span>
-			{m.banner_vaulta_rebrand()}
+			</svg><span class="font-semibold">Breaking News:</span>
+			EOS Network Rebrands to Vaulta
 		</a>
 
 		{#if dismissable}

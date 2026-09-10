@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Asset as AssetElement, type AssetProps } from 'unicove-components';
-	import { languageTag } from '$lib/paraglide/runtime.js';
+	import { Asset as AssetElement, type AssetProps } from '@wharfkit/svelte-components';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
 	import { getContext } from 'svelte';
 
@@ -8,8 +7,7 @@
 
 	const context = getContext<UnicoveContext>('state');
 	const increasedPrecision = $derived(context.settings.data.increasedPrecision);
-
-	const locale = languageTag();
+	const locale = $derived(context.settings.data.locale);
 </script>
 
 <AssetElement {...props} {increasedPrecision} {locale} />

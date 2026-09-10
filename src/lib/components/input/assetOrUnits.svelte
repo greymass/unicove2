@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Asset } from '@wharfkit/antelope';
 	import { type ComponentProps } from 'svelte';
-	import { AssetInput } from 'unicove-components';
-	import { TextInput } from 'unicove-components';
-	import { Button } from 'unicove-components';
-	import { Cluster } from 'unicove-components';
-	import { Stack } from 'unicove-components';
-	import { Code } from 'unicove-components';
+	import { AssetInput } from '@wharfkit/svelte-components';
+	import { TextInput } from '@wharfkit/svelte-components';
+	import { Button } from '@wharfkit/svelte-components';
+	import { Cluster } from '@wharfkit/svelte-components';
+	import { Stack } from '@wharfkit/svelte-components';
+	import { Code } from '@wharfkit/svelte-components';
 
 	interface AssetOrUnitsProps extends ComponentProps<typeof TextInput> {
 		assetValue: Asset;

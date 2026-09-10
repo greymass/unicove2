@@ -1,29 +1,24 @@
 <script lang="ts">
-	import { getContext, type ComponentProps } from 'svelte';
+	import { getContext, onDestroy, type ComponentProps } from 'svelte';
 	import { createDialog, melt, type CreateDialogProps } from '@melt-ui/svelte';
-	import type { TextInput } from 'unicove-components';
+	import type { TextInput } from '@wharfkit/svelte-components';
 	import { preventDefault } from '$lib/utils';
-	import { goto } from '$lib/utils';
 	import { fade, scale } from 'svelte/transition';
-	import * as m from '$lib/paraglide/messages';
 	import {
-		SearchRecordType,
-		search,
-		isSearchBlock,
-		type SearchRecord,
-		isSearchAccount,
-		isSearchKey,
-		isSearchTransaction
-	} from '$lib/state/search.svelte';
+		defaultRegistry,
+		SearchManager,
+		type SearchActionPlugin,
+		type SearchRecord
+	} from '$lib/state/search';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
-	import { Stack } from 'unicove-components';
+	import { Stack } from '@wharfkit/svelte-components';
 	import { cn } from '$lib/utils';
 	import Result from './result.svelte';
 	import { browser } from '$app/environment';
 	import { ArrowRight } from '@lucide/svelte';
 	import type { UnicoveContext } from '$lib/state/client.svelte';
-	import type { SerializedSession } from '@wharfkit/session';
+	import { goto } from '$app/navigation';
 
 	const context = getContext<UnicoveContext>('state');
 
@@ -36,49 +31,20 @@
 	let searchValue: string = $state('');
 	let selectedIndex: number = $state(0);
 
-	let results: SearchRecord[] = $state(context.history.get());
+	// Create search manager to handle sync and async searches
+	const searchManager = new SearchManager(context);
 
+	// Cleanup on component unmount
+	onDestroy(() => {
+		searchManager.destroy();
+	});
+
+	// Derive results from manager
+	const results = $derived(searchManager.results);
+
+	// Update manager when search value changes
 	$effect(() => {
-		if (searchValue) {
-			results = search(context, searchValue);
-		} else {
-			results = context.history.get();
-		}
-	});
-
-	const searchType = $derived.by(() => {
-		// Priority to determine the type of search
-		if (isSearchKey(searchValue)) {
-			return SearchRecordType.KEY;
-		}
-		if (isSearchTransaction(searchValue)) {
-			return SearchRecordType.TRANSACTION;
-		}
-		if (isSearchAccount(searchValue)) {
-			return SearchRecordType.ACCOUNT;
-		}
-		if (isSearchBlock(searchValue)) {
-			return SearchRecordType.BLOCK;
-		}
-		return SearchRecordType.PAGE;
-	});
-
-	const result = $derived.by(() => {
-		switch (searchType) {
-			case SearchRecordType.ACCOUNT:
-				return `/${context.network}/account/${searchValue}`;
-			case SearchRecordType.BLOCK:
-				return `/${context.network}/block/${searchValue}`;
-			case SearchRecordType.KEY:
-				return `/${context.network}/key/${searchValue}`;
-			case SearchRecordType.TRANSACTION:
-				return `/${context.network}/transaction/${searchValue}`;
-			case SearchRecordType.PAGE:
-				return `/${context.network}/${searchValue}`;
-			default:
-				console.warn('unknown search type', searchType);
-				return null;
-		}
+		searchManager.setQuery(searchValue);
 	});
 
 	const resetSelectedIndex: CreateDialogProps['onOpenChange'] = ({ next }) => {
@@ -146,32 +112,41 @@
 			return;
 		}
 
-		// Clear the search history and keep search open, resetting
-		if (result.type === SearchRecordType.CLEAR) {
-			context.history.clear();
-			searchValue = '';
+		// Check if this is an action (CLEAR, PAGE, etc.)
+		if (result.data && typeof result.data === 'object' && 'execute' in result.data) {
+			const action = result.data as SearchActionPlugin;
+			await action.execute(context);
+			// Check if action has onSelect handler that wants to keep dialog open
+			const keepOpen = action.onSelect?.(context);
+			if (keepOpen) {
+				searchValue = '';
+				return;
+			}
+			closeSearch();
 			return;
 		}
 
+		// Get the plugin for this result type
+		const plugin = defaultRegistry.getResultPlugin(result.type);
+
+		// Call onSelect handler if present
+		if (plugin?.onSelect) {
+			const keepOpen = plugin.onSelect(result, context);
+			if (keepOpen) {
+				return; // Keep dialog open
+			}
+		}
+
+		// Close search for normal navigation
 		closeSearch();
 
-		// Switch accounts if this is a request to switch
-		if ([SearchRecordType.SWITCH].includes(result.type)) {
-			context.wharf.switch(result.data as SerializedSession);
-			// Navigate if needed
-			if (!context.settings.data.preventAccountPageSwitching) {
-				goto(result.url);
-			}
-			return;
-		}
-
-		// Should this result type be saved in history?
-		if (![SearchRecordType.SWITCH, SearchRecordType.UNKNOWN].includes(result.type)) {
+		// Check if this result type should be saved to history (default: false)
+		if (plugin?.savesToHistory) {
 			context.history.add(result);
 		}
 
-		// Should this result type navigate to the URL?
-		if (![SearchRecordType.SWITCH, SearchRecordType.UNKNOWN].includes(result.type)) {
+		// Navigate to the URL if present
+		if (result.url) {
 			goto(result.url);
 		}
 	}
@@ -193,7 +168,7 @@
 			if (platform.startsWith('mac')) return '⌘ + K';
 		} else {
 			// Fallback for older browsers
-			if (navigator.userAgent.indexOf('Mac') != -1) return '⌘ + K';
+			if (navigator.userAgent.indexOf('Mac') !== -1) return '⌘ + K';
 		}
 
 		return '/';
@@ -205,8 +180,7 @@
 		$inspect({
 			selectedIndex,
 			searchValue,
-			searchType,
-			result,
+			results,
 			open: $open
 		});
 	}
@@ -219,21 +193,19 @@
 	aria-label="search"
 	id="search"
 	class={cn(
-		'text-muted focus-visible:ring-solar-500 focus-visible:border-solar-500 md:border-outline md:bg-surface  relative z-50 inline-flex h-10 items-center justify-between rounded-lg py-3.5 text-base leading-4 font-medium text-nowrap focus:outline-hidden focus-visible:ring focus-visible:ring-inset md:justify-between md:border-2  md:py-2 md:pr-0 md:pl-3',
+		'text-muted focus-visible:ring-solar-500 focus-visible:border-solar-500 lg:border-outline lg:bg-surface  relative z-50 inline-flex h-10 items-center justify-between rounded-lg py-3.5 text-base leading-4 font-medium text-nowrap focus:outline-hidden focus-visible:ring focus-visible:ring-inset md:px-2 lg:justify-between lg:border-2  lg:py-2 lg:pr-0 lg:pl-3',
 		props.class
 	)}
 >
 	<span class="inline-flex items-center gap-2">
 		<SearchIcon class="size-6 text-inherit md:size-5" />
-		<span class="hidden md:inline">
-			{m.common_search({
-				network: String(context.network.chain.name).slice(0, 3)
-			})}
+		<span class="hidden lg:inline">
+			Search {String(context.network.chain.name).slice(0, 3)}...
 		</span>
 	</span>
 
 	{#if shortcutKey}
-		<span class="border-outline m-2 hidden rounded-sm border px-2 py-1 md:inline">
+		<span class="border-outline m-2 hidden rounded-sm border px-2 py-1 lg:inline">
 			{shortcutKey}
 		</span>
 	{/if}
@@ -248,7 +220,7 @@
 		></div>
 		<div
 			use:melt={$content}
-			class="bg-surface-container fixed top-20 left-1/2 z-50 max-h-[85vh] w-[90vw] max-w-lg -translate-x-1/2 transform overflow-hidden rounded-2xl p-4 shadow-lg"
+			class="bg-surface-container fixed top-20 left-1/2 z-50 max-h-[85vh] w-[90vw] max-w-xl -translate-x-1/2 transform overflow-hidden rounded-2xl p-4 shadow-lg"
 			transition:scale={{
 				duration: 100,
 				start: 0.95
@@ -264,30 +236,63 @@
 							autocapitalize="off"
 							bind:this={ref}
 							bind:value={searchValue}
-							placeholder={m.common_search_unicove()}
+							placeholder="Search Unicove"
 							class="border-primary w-full rounded-lg border-2 bg-transparent p-4 focus:outline-hidden"
 						/>
-						<div class="text-muted absolute inset-y-1 right-4 hidden place-items-center sm:grid">
-							<SearchIcon class="size-5 " />
-						</div>
+
+						{#if searchManager.isLoading}
+							<div class="absolute inset-y-1 right-4 hidden place-items-center sm:grid">
+								<svg
+									class="animate-spin"
+									width="20"
+									height="20"
+									viewBox="0 0 20 20"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<!-- Background circle if wanted later  -->
+									<!-- <circle -->
+									<!-- 	cx="10" -->
+									<!-- 	cy="10" -->
+									<!-- 	r="9" -->
+									<!-- 	fill="none" -->
+									<!-- 	class="stroke-surface-container-highest" -->
+									<!-- 	stroke-width="2" -->
+									<!-- 	stroke-dasharray="56.55 18.85" -->
+									<!-- 	stroke-dashoffset="0" -->
+									<!-- /> -->
+
+									<circle
+										class="stroke-primary"
+										cx="10"
+										cy="10"
+										r="9"
+										fill="none"
+										stroke-width="2"
+										stroke-dasharray="14.14 56.55"
+										stroke-dashoffset="0"
+										transform="rotate(-90 10 10)"
+									/>
+								</svg>
+							</div>
+						{/if}
 					</div>
 				</form>
 
-				<div class="table-styles grid grid-cols-[1fr_1fr] gap-x-4 sm:grid-cols-[1fr_1fr_auto]">
+				<div class="table-styles grid grid-cols-[1fr_1fr] gap-x-4 sm:grid-cols-[1fr_auto_auto]">
 					{#if results.length > 0}
 						<div class="table-head-styles col-span-full grid grid-cols-subgrid select-none">
 							{#if searchValue}
-								<span class="pl-2">{m.common_search_results()}</span>
+								<span class="pl-2">Search Results</span>
 							{:else}
-								<span class="pl-2">{m.common_recent_activity()}</span>
+								<span class="pl-2">Recent Activity</span>
 							{/if}
-							<span class="text-right sm:text-left">{m.common_action()}</span>
+							<span class="text-right sm:text-left">Description</span>
 							{#if !searchValue}
 								<button
 									class="focus-visible:outline-solar-500 hidden justify-self-end focus-visible:outline focus-visible:outline-offset-2 sm:block"
-									onclick={() => context.history.clear()}
+									onclick={() => searchManager.clearHistory()}
 								>
-									{m.common_clear()}
+									Clear
 								</button>
 							{/if}
 						</div>
@@ -307,12 +312,11 @@
 						<!-- No results -->
 						<div class="col-span-full m-4 grid items-center justify-items-center">
 							{#if searchValue}
-								<span class="text-muted col-span-full text-center">
-									{m.common_search_no_results()}
-								</span>
+								<span class="text-muted col-span-full text-center">No results found</span>
 							{:else}
 								<span class="text-muted col-span-full text-center">
-									{m.common_search_instructions()}
+									Search for Unicove features or enter an account name, public key, or transaction
+									ID on the network.
 								</span>
 							{/if}
 						</div>
@@ -326,7 +330,7 @@
 {#snippet ResultRow(index: number, item: SearchRecord)}
 	{@const active = index === selectedIndex}
 	<li
-		class="group/row group-has-[:hover]/list:text-muted hover:group-has-[:hover]/list:bg-surface-container-high hover:group-has-[:hover]/list:text-on-surfac data-[active=true]:bg-surface-container-high data-[active=true]:text-on-surface col-span-full grid h-12 grid-cols-subgrid items-center justify-items-start rounded-lg group-has-[:hover]/list:bg-transparent focus:outline-hidden"
+		class="group/row group-has-[:hover]/list:text-muted hover:group-has-[:hover]/list:bg-surface-container-high hover:group-has-[:hover]/list:text-on-surface data-[active=true]:bg-surface-container-high data-[active=true]:text-on-surface col-span-full grid h-12 grid-cols-subgrid items-center justify-items-start rounded-lg group-has-[:hover]/list:bg-transparent focus:outline-hidden"
 		data-active={active}
 	>
 		<Result class="col-span-2 sm:col-span-3" {active} record={item} onclick={closeSearch}>
@@ -346,13 +350,12 @@
 		class="group-has-[:hover]/list:text-muted hover:group-has-[:hover]/list:bg-surface-container-high hover:group-has-[:hover]/list:text-on-surface data-[active=true]:bg-surface-container-high data-[active=true]:text-on-surface col-span-full grid h-12 grid-cols-subgrid items-center justify-items-start rounded-lg group-has-[:hover]/list:bg-transparent focus:outline-hidden"
 		data-active={active}
 	>
-		<Result class="col-span-2 sm:col-span-3" {active} record={item} onclick={closeSearch}>
-			<button
-				class="text-muted focus-visible:ring-solar-500 hover:text-on-surface grid hidden size-12 place-items-center justify-self-end focus-visible:ring-3 focus-visible:outline-hidden focus-visible:ring-inset sm:block"
-				onclick={() => context.history.remove(index)}
-			>
-				<X class="text-inherit" />
-			</button>
-		</Result>
+		<Result class="col-span-2 sm:col-span-2" {active} record={item} onclick={closeSearch}></Result>
+		<button
+			class="text-muted focus-visible:ring-solar-500 hover:text-on-surface grid hidden size-12 place-items-center justify-self-end focus-visible:ring-3 focus-visible:outline-hidden focus-visible:ring-inset sm:block"
+			onclick={() => searchManager.removeHistoryItem(index)}
+		>
+			<X class="text-inherit" />
+		</button>
 	</li>
 {/snippet}

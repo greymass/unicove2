@@ -23,8 +23,12 @@ import { Types as HyperionTypes } from '@wharfkit/hyperion';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ObjectifiedActionData = Record<string, any>;
 
+export abstract class SummaryTitles<V> {
+	[key: string]: V;
+}
+
 export interface ContractSummaries {
-	titles: Record<string, string>;
+	titles: SummaryTitles<string>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	components: Record<string, any>;
 }

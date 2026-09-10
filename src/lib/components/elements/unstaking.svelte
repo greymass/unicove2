@@ -3,11 +3,14 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import AssetText from '$lib/components/elements/asset.svelte';
-	import { Card, Stack, Table, TD, TH, TR } from 'unicove-components';
-	import { Button } from 'unicove-components';
+	import { Card, Stack, Table, TD, TH, TR } from '@wharfkit/svelte-components';
+	import { Button } from '@wharfkit/svelte-components';
 	import type { UnstakingRecord } from '$lib/utils/staking';
-	import { languageTag } from '$lib/paraglide/runtime';
-	import * as m from '$lib/paraglide/messages';
+	import type { UnicoveContext } from '$lib/state/client.svelte';
+	import { getContext } from 'svelte';
+
+	const context = getContext<UnicoveContext>('state');
+	const locale = $derived(context.settings.data.locale);
 
 	interface Props extends HTMLAttributes<HTMLDivElement> {
 		href?: string;
@@ -18,15 +21,16 @@
 </script>
 
 {#if records.filter((r) => !r.savings).length > 0}
-	<Card {...props} title={m.common_unstaking()} class="auto-rows-max">
+	<Card {...props} title="Unstaking" class="auto-rows-max">
 		<Stack>
 			<p>
-				{m.unstaking_description()}
+				The tokens currently being unstaked are listed below with the date they become available.
+				These balances will continue to earn rewards until they are withdrawn.
 			</p>
 			<Table>
 				{#snippet thead()}
-					<TH class="text-left">{m.common_amount()}</TH>
-					<TH class="text-right">{m.common_date_available()}</TH>
+					<TH class="text-left">Amount</TH>
+					<TH class="text-right">Date Available</TH>
 				{/snippet}
 
 				{#each records as record}
@@ -34,15 +38,15 @@
 						<TR>
 							<TD><AssetText variant="full" value={record.balance} /></TD>
 							<TD class="text-right">
-								{record.date ? record.date.toLocaleTimeString(languageTag()) : '--'}
-								{record.date ? record.date.toLocaleDateString(languageTag()) : '--'}
+								{record.date ? record.date.toLocaleTimeString(locale) : '--'}
+								{record.date ? record.date.toLocaleDateString(locale) : '--'}
 							</TD>
 						</TR>
 					{/if}
 				{/each}
 			</Table>
 			{#if href}
-				<Button {href} variant="secondary">{m.common_withdraw()}</Button>
+				<Button {href} variant="secondary">Withdraw</Button>
 			{/if}
 		</Stack>
 	</Card>
